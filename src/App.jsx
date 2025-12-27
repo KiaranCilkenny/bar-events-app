@@ -53,6 +53,8 @@ export default function BarEventsApp() {
       'dallas cowboys': 'https://a.espncdn.com/i/teamlogos/nfl/500/dal.png',
       'eagles': 'https://a.espncdn.com/i/teamlogos/nfl/500/phi.png',
       'philadelphia eagles': 'https://a.espncdn.com/i/teamlogos/nfl/500/phi.png',
+      'bills': 'https://a.espncdn.com/i/teamlogos/nfl/500/buf.png',
+      'buffalo bills': 'https://a.espncdn.com/i/teamlogos/nfl/500/buf.png',
       
       // NBA
       'knicks': 'https://a.espncdn.com/i/teamlogos/nba/500/ny.png',
@@ -61,6 +63,8 @@ export default function BarEventsApp() {
       'brooklyn nets': 'https://a.espncdn.com/i/teamlogos/nba/500/bkn.png',
       'lakers': 'https://a.espncdn.com/i/teamlogos/nba/500/lal.png',
       'los angeles lakers': 'https://a.espncdn.com/i/teamlogos/nba/500/lal.png',
+      'heat': 'https://a.espncdn.com/i/teamlogos/nba/500/mia.png',
+      'miami heat': 'https://a.espncdn.com/i/teamlogos/nba/500/mia.png',
       
       // MLB
       'yankees': 'https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png',
@@ -76,6 +80,7 @@ export default function BarEventsApp() {
       
       // Premier League
       'manchester united': 'https://a.espncdn.com/i/teamlogos/soccer/500/360.png',
+      'manchester city': 'https://a.espncdn.com/i/teamlogos/soccer/500/382.png',
       'liverpool': 'https://a.espncdn.com/i/teamlogos/soccer/500/364.png',
       'arsenal': 'https://a.espncdn.com/i/teamlogos/soccer/500/359.png',
       'chelsea': 'https://a.espncdn.com/i/teamlogos/soccer/500/363.png',
@@ -940,9 +945,27 @@ export default function BarEventsApp() {
               color: '#FFFFFF',
               fontSize: '20px',
               fontWeight: '700',
-              margin: 0
+              margin: 0,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
             }}>
-              <span style={{ fontSize: '28px', marginRight: '8px' }}>{selectedTeam.icon}</span>
+              {getTeamLogoUrl(selectedTeam.name) ? (
+                <img 
+                  src={getTeamLogoUrl(selectedTeam.name)} 
+                  alt={`${selectedTeam.name} logo`}
+                  style={{
+                    width: '28px',
+                    height: '28px',
+                    objectFit: 'contain'
+                  }}
+                  onError={(e) => { 
+                    e.target.style.display = 'none';
+                  }}
+                />
+              ) : (
+                <span style={{ fontSize: '28px' }}>{selectedTeam.icon}</span>
+              )}
               {selectedTeam.name}
             </h1>
           </div>
@@ -2093,18 +2116,29 @@ export default function BarEventsApp() {
                   }}
                 >
                   {getLeagueLogo(sport.id) ? (
-                    <img 
-                      src={getLeagueLogo(sport.id)} 
-                      alt={`${sport.name} logo`}
-                      style={{
-                        width: '56px',
-                        height: '56px',
-                        objectFit: 'contain'
-                      }}
-                      onError={(e) => { 
-                        e.target.style.display = 'none';
-                      }}
-                    />
+                    <div style={{
+                      width: '64px',
+                      height: '64px',
+                      backgroundColor: '#FFFFFF',
+                      borderRadius: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '8px'
+                    }}>
+                      <img 
+                        src={getLeagueLogo(sport.id)} 
+                        alt={`${sport.name} logo`}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'contain'
+                        }}
+                        onError={(e) => { 
+                          e.target.parentElement.style.display = 'none';
+                        }}
+                      />
+                    </div>
                   ) : (
                     <span style={{ fontSize: '40px' }}>{sport.icon}</span>
                   )}
@@ -3066,18 +3100,29 @@ export default function BarEventsApp() {
               }}
             >
               {getLeagueLogo(org.id) ? (
-                <img 
-                  src={getLeagueLogo(org.id)} 
-                  alt={`${org.name} logo`}
-                  style={{
-                    width: '48px',
-                    height: '48px',
-                    objectFit: 'contain'
-                  }}
-                  onError={(e) => { 
-                    e.target.style.display = 'none';
-                  }}
-                />
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '6px'
+                }}>
+                  <img 
+                    src={getLeagueLogo(org.id)} 
+                    alt={`${org.name} logo`}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain'
+                    }}
+                    onError={(e) => { 
+                      e.target.parentElement.style.display = 'none';
+                    }}
+                  />
+                </div>
               ) : (
                 <span style={{ fontSize: '32px' }}>{org.icon}</span>
               )}
