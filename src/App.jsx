@@ -2858,8 +2858,9 @@ export default function BarEventsApp() {
     const teams = {
       'nfl': [
         { id: 'dallas-cowboys', name: 'Dallas Cowboys', icon: '⭐', conference: 'NFC East' },
+        { id: 'ny-giants', name: 'New York Giants', icon: '🔵', conference: 'NFC East' },
+        { id: 'ny-jets', name: 'New York Jets', icon: '✈️', conference: 'AFC East' },
         { id: 't2', name: 'Philadelphia Eagles', icon: '🦅', conference: 'NFC East' },
-        { id: 't3', name: 'New York Giants', icon: '🗽', conference: 'NFC East' },
         { id: 't4', name: 'Kansas City Chiefs', icon: '🏈', conference: 'AFC West' }
       ],
       'ncaa-football': [
@@ -2869,8 +2870,24 @@ export default function BarEventsApp() {
       ],
       'nba': [
         { id: 'new-york-knicks', name: 'New York Knicks', icon: '🗽', conference: 'Eastern' },
-        { id: 't9', name: 'Brooklyn Nets', icon: '🏙️', conference: 'Eastern' },
+        { id: 'brooklyn-nets', name: 'Brooklyn Nets', icon: '⚫', conference: 'Eastern' },
         { id: 't10', name: 'Los Angeles Lakers', icon: '💜', conference: 'Western' }
+      ],
+      'mlb': [
+        { id: 'ny-yankees', name: 'New York Yankees', icon: '⚾', conference: 'AL East' },
+        { id: 'ny-mets', name: 'New York Mets', icon: '🔶', conference: 'NL East' },
+        { id: 'boston-red-sox', name: 'Boston Red Sox', icon: '🔴', conference: 'AL East' }
+      ],
+      'nhl': [
+        { id: 'ny-rangers', name: 'New York Rangers', icon: '🔵', conference: 'Metropolitan' },
+        { id: 'nyi', name: 'New York Islanders', icon: '🏒', conference: 'Metropolitan' },
+        { id: 'njd', name: 'New Jersey Devils', icon: '😈', conference: 'Metropolitan' }
+      ],
+      'premier-league': [
+        { id: 'manchester-united', name: 'Manchester United', icon: '⚽', conference: 'Premier League' },
+        { id: 'liverpool', name: 'Liverpool', icon: '🔴', conference: 'Premier League' },
+        { id: 'arsenal', name: 'Arsenal', icon: '🔴', conference: 'Premier League' },
+        { id: 'chelsea', name: 'Chelsea', icon: '🔵', conference: 'Premier League' }
       ]
     };
 
