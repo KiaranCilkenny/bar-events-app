@@ -173,6 +173,18 @@ export default function BarEventsApp() {
     { id: 'b16', name: "Blueshirt Tavern", rating: 4.7, reviews: 267, distance: '0.7 mi', special: '🏒 Rangers rally', isFanBar: true, teamAffiliation: 'Rangers', image: '🔵', gradient: 'from-blue-700 to-red-600', address: '456 Amsterdam Ave, New York, NY 10024', description: 'Official NY Rangers bar on the Upper West Side. Blueshirts fans since 1926.', ownerStory: 'Grandfather played for Rangers farm team. Hockey is in the family blood.', gameDaySpecials: ['$4 Labatt Blue during games', 'Rangers jersey - free appetizer', '$20 beer pitcher deal', 'Goal = shot special', 'Playoff overtime free wings'], photos: ['Rangers banners', 'Stanley Cup photos', 'Hockey stick signed', 'UWS local favorite'] },
     { id: 'b17', name: "Boston Pride", rating: 4.4, reviews: 156, distance: '0.9 mi', special: '⚾ Sox in NYC', isFanBar: true, teamAffiliation: 'Red Sox', image: '🔴', gradient: 'from-red-700 to-blue-800', address: '123 Avenue A, New York, NY 10009', description: 'Red Sox fans living in NYC gather here. Enemy territory but it feels like Fenway.', ownerStory: 'Boston expat who couldn\'t leave the Sox behind. Created a Boston enclave in Manhattan.', gameDaySpecials: ['$4 Sam Adams all game', 'Red Sox gear - free Fenway Frank', '$18 beer & pretzel combo', 'Sweet Caroline singalong', 'Sox win = Boston cream pie shots'], photos: ['Green Monster replica', 'Fenway seats at bar', '2004 memorabilia', 'Boston faithful'] },
     
+    // ADDITIONAL NYC FAN BARS
+    { id: 'b36', name: "Madison Square Tavern", rating: 4.8, reviews: 402, distance: '0.4 mi', special: '🏀 Knicks HQ #2', isFanBar: true, teamAffiliation: 'Knicks', image: '🗽', gradient: 'from-blue-600 to-orange-500', address: '234 W 33rd St, New York, NY 10001', description: 'Second official Knicks bar right across from MSG. Pregame madhouse on game nights.', ownerStory: 'Owner is a Knicks season ticket holder since the 90s. This is where real fans come.', gameDaySpecials: ['Show Knicks ticket - free appetizer', '$5 drafts all game', 'Knicks win - shots on the house', '$30 beer & wings bucket', 'Halftime raffle for signed gear'], photos: ['MSG view from window', 'Knicks shrine wall', 'Game night crowds', 'Championship photos'] },
+    { id: 'b37', name: "Orange & Blue Pub", rating: 4.7, reviews: 298, distance: '1.3 mi', special: '🏀 Knicks UWS', isFanBar: true, teamAffiliation: 'Knicks', image: '🏀', gradient: 'from-orange-600 to-blue-700', address: '567 Columbus Ave, New York, NY 10024', description: 'Upper West Side Knicks bar. Where neighborhood fans gather for every game.', ownerStory: 'Family has been going to Knicks games for three generations. Bar is a love letter to the team.', gameDaySpecials: ['$4 Blue Moon all game', 'Orange or blue outfit - free shot', '$25 pizza & pitcher combo', 'Knicks 3-pointer = $1 shots', 'Student discount with ID'], photos: ['Orange and blue decor', 'UWS loyal crowd', 'Ewing jersey signed', 'Local favorite'] },
+    { id: 'b38', name: "Big Blue Sports Bar", rating: 4.6, reviews: 334, distance: '2.8 mi', special: '🏈 Giants NJ', isFanBar: true, teamAffiliation: 'Giants', image: '🔵', gradient: 'from-blue-700 to-red-600', address: '234 Washington St, Hoboken, NJ 07030', description: 'Giants bar in Hoboken. Short PATH ride from Manhattan. Worth the trip on game day.', ownerStory: 'Hoboken native and lifelong Giants season ticket holder. Bar is packed every Sunday.', gameDaySpecials: ['$3 Bud Light during games', 'Giants TD - free round', 'Wear Giants jersey - 20% off', '$28 wings & beer special', 'Postgame party after wins'], photos: ['Giants flags outside', 'Packed Sunday crowds', 'Super Bowl trophies display', 'Hoboken location'] },
+    { id: 'b39', name: "MetLife Tavern", rating: 4.5, reviews: 267, distance: '3.5 mi', special: '🏈 Near stadium', isFanBar: true, teamAffiliation: 'Giants', image: '🏟️', gradient: 'from-blue-800 to-gray-600', address: '789 Route 3, East Rutherford, NJ 07073', description: 'Right near MetLife Stadium. Perfect pregame and postgame spot for Giants fans.', ownerStory: 'Opened the year MetLife Stadium opened. Serves tailgaters and stadium-goers.', gameDaySpecials: ['Show game ticket - beer discount', '$4 domestic drafts', 'Shuttle to/from stadium', '$20 burger & fries & beer', 'Giants memorabilia raffle'], photos: ['Stadium view', 'Pregame crowds', 'Shuttle bus', 'Game day atmosphere'] },
+    { id: 'b40', name: "The Stadium Club", rating: 4.7, reviews: 389, distance: '0.2 mi', special: '⚾ Yankees #3', isFanBar: true, teamAffiliation: 'Yankees', image: '⚾', gradient: 'from-navy-700 to-white', address: '456 E 161st St, Bronx, NY 10451', description: 'Third Yankees bar on the stadium strip. Premium location, premium Yankees experience.', ownerStory: 'Premium Yankees bar with upscale food and craft cocktails. Classy pinstripe vibes.', gameDaySpecials: ['$6 craft cocktails during games', 'Show ticket stub - free dessert', '$22 steak sandwich & beer', 'Home run happy hour', 'VIP rooftop viewing area'], photos: ['Upscale interior', 'Stadium proximity', 'Craft cocktail bar', 'Premium experience'] },
+    { id: 'b41', name: "Green & White Bar", rating: 4.5, reviews: 278, distance: '2.4 mi', special: '✈️ Jets LIC', isFanBar: true, teamAffiliation: 'Jets', image: '✈️', gradient: 'from-green-700 to-white', address: '345 Jackson Ave, Long Island City, NY 11101', description: 'Jets bar in LIC serving Queens and Brooklyn fans. J-E-T-S chants echo here every Sunday.', ownerStory: 'Queens native and diehard Jets fan. Never gave up on the team, never will.', gameDaySpecials: ['$3 Miller Lite all game', 'Jets gear - free wings', '$18 beer bucket', 'TD celebration shots', 'Loyalty punch card program'], photos: ['Jets green everywhere', 'LIC location', 'Loyal fanbase', 'Game day energy'] },
+    { id: 'b42', name: "Rangers Den", rating: 4.6, reviews: 312, distance: '0.6 mi', special: '🏒 Rangers Midtown', isFanBar: true, teamAffiliation: 'Rangers', image: '🔵', gradient: 'from-blue-700 to-red-600', address: '432 7th Ave, New York, NY 10018', description: 'Second Rangers bar in Midtown. Convenient to MSG and packed on game nights.', ownerStory: 'Rangers fan since childhood. Created a home away from home for Blueshirts faithful.', gameDaySpecials: ['$4 Labatt Blue during games', 'Rangers jersey - free appetizer', '$22 pitcher & nachos', 'Goal celebration shots', 'Playoff watch parties'], photos: ['Rangers memorabilia', 'Midtown location', 'MSG proximity', 'Blueshirts pride'] },
+    { id: 'b43', name: "Brooklyn Nets Lounge", rating: 4.5, reviews: 245, distance: '1.2 mi', special: '🏀 Nets Downtown', isFanBar: true, teamAffiliation: 'Nets', image: '⚫', gradient: 'from-black to-white', address: '567 Flatbush Ave, Brooklyn, NY 11225', description: 'Second Nets bar in Brooklyn. Downtown location for Brooklyn basketball fans.', ownerStory: 'Brooklyn born and raised. Celebrated when the Nets moved to Brooklyn and opened this bar.', gameDaySpecials: ['$4 Brooklyn Lager all game', 'Nets gear - 15% off food', '$20 wings & beer combo', '3-pointer specials', 'Free arcade games'], photos: ['Brooklyn pride', 'Black and white theme', 'Downtown vibe', 'Nets faithful'] },
+    { id: 'b44', name: "Amazin' Mets Tavern", rating: 4.6, reviews: 298, distance: '2.1 mi', special: '⚾ Mets Flushing', isFanBar: true, teamAffiliation: 'Mets', image: '🔶', gradient: 'from-blue-600 to-orange-600', address: '789 Roosevelt Ave, Flushing, NY 11368', description: 'Second Mets bar near Citi Field. Queens Mets fans unite here for every game.', ownerStory: 'Queens family business. Three generations of Mets fans running this bar.', gameDaySpecials: ['$3 Coors Light during games', 'Mets gear - free Mr. Met cookie', '$20 beer & hot dog combo', 'Home run shots', 'Postgame celebrations'], photos: ['Near Citi Field', 'Mets orange and blue', 'Queens community', 'Family atmosphere'] },
+    { id: 'b45', name: "The Bronx Pinstripes", rating: 4.7, reviews: 356, distance: '0.4 mi', special: '⚾ Yankees Bronx', isFanBar: true, teamAffiliation: 'Yankees', image: '⚾', gradient: 'from-navy-800 to-gray-500', address: '234 Grand Concourse, Bronx, NY 10451', description: 'Fourth Yankees bar in the Bronx. Deep in Yankees territory with true Bronx atmosphere.', ownerStory: 'Bronx born, Bronx raised, Yankees forever. This is where real Bronx fans watch the game.', gameDaySpecials: ['$4 domestic drafts all game', 'Pinstripes outfit - free shot', '$16 sandwich & beer', 'Grand slam celebrations', 'Bronx pride specials'], photos: ['Bronx atmosphere', 'Yankees shrine', 'Local crowd', 'Pinstripe paradise'] },
+    
     // NEW REGULAR BARS - MANHATTAN
     { id: 'b18', name: "The Midtown Mixer", rating: 4.5, reviews: 289, distance: '0.6 mi', special: '🍸 Craft cocktails', isFanBar: false, image: '🍸', gradient: 'from-purple-600 to-pink-500', address: '432 5th Ave, New York, NY 10018', description: 'Upscale cocktail lounge with creative drinks and sophisticated atmosphere. Perfect for after-work gatherings.' },
     { id: 'b19', name: "Times Square Tavern", rating: 4.2, reviews: 512, distance: '0.8 mi', special: '🎭 Theater district', isFanBar: false, image: '🎭', gradient: 'from-yellow-500 to-orange-600', address: '234 W 44th St, New York, NY 10036', description: 'Classic NYC pub in the heart of Times Square. Popular pre-theater spot with 15+ screens for sports.' },
@@ -231,11 +243,11 @@ export default function BarEventsApp() {
       icon: '🗽',
       colors: ['#006BB6', '#F58426'],
       upcomingGames: [
-        { id: 'g7', opponent: 'vs Heat', date: 'Tonight', time: '7:30 PM EST', network: 'MSG', barsCount: 28, fanBarsCount: 4 },
-        { id: 'g8', opponent: '@ Celtics', date: 'Dec 8', time: '7:00 PM EST', network: 'TNT', barsCount: 22, fanBarsCount: 4 },
-        { id: 'g9', opponent: 'vs Lakers', date: 'Dec 12', time: '8:00 PM EST', network: 'ESPN', barsCount: 35, fanBarsCount: 4 }
+        { id: 'g7', opponent: 'vs Heat', date: 'Tonight', time: '7:30 PM EST', network: 'MSG', barsCount: 28, fanBarsCount: 3 },
+        { id: 'g8', opponent: '@ Celtics', date: 'Dec 8', time: '7:00 PM EST', network: 'TNT', barsCount: 22, fanBarsCount: 3 },
+        { id: 'g9', opponent: 'vs Lakers', date: 'Dec 12', time: '8:00 PM EST', network: 'ESPN', barsCount: 35, fanBarsCount: 3 }
       ],
-      fanBars: [],
+      fanBars: ['b14', 'b36', 'b37'],
       description: 'New York Knicks - Eastern Conference'
     },
     'manchester-united': {
@@ -261,7 +273,7 @@ export default function BarEventsApp() {
         { id: 'nyg2', opponent: '@ Eagles', date: 'Dec 29', time: '1:00 PM EST', network: 'FOX', barsCount: 22, fanBarsCount: 3 },
         { id: 'nyg3', opponent: 'vs Colts', date: 'Jan 5', time: '1:00 PM EST', network: 'CBS', barsCount: 18, fanBarsCount: 3 }
       ],
-      fanBars: ['b9'],
+      fanBars: ['b9', 'b38', 'b39'],
       description: 'New York Giants - NFC East'
     },
     'ny-jets': {
@@ -274,7 +286,7 @@ export default function BarEventsApp() {
         { id: 'nyj2', opponent: '@ Patriots', date: 'Dec 29', time: '1:00 PM EST', network: 'CBS', barsCount: 18, fanBarsCount: 2 },
         { id: 'nyj3', opponent: 'vs Dolphins', date: 'Jan 5', time: '1:00 PM EST', network: 'CBS', barsCount: 19, fanBarsCount: 2 }
       ],
-      fanBars: ['b10'],
+      fanBars: ['b10', 'b41'],
       description: 'New York Jets - AFC East'
     },
     'ny-yankees': {
@@ -283,10 +295,10 @@ export default function BarEventsApp() {
       icon: '⚾',
       colors: ['#003087', '#FFFFFF'],
       upcomingGames: [
-        { id: 'nyy1', opponent: 'Spring Training', date: 'Feb 22', time: '1:00 PM EST', network: 'YES', barsCount: 30, fanBarsCount: 3 },
-        { id: 'nyy2', opponent: 'Opening Day', date: 'Mar 28', time: '1:00 PM EST', network: 'YES', barsCount: 45, fanBarsCount: 3 }
+        { id: 'nyy1', opponent: 'Spring Training', date: 'Feb 22', time: '1:00 PM EST', network: 'YES', barsCount: 30, fanBarsCount: 4 },
+        { id: 'nyy2', opponent: 'Opening Day', date: 'Mar 28', time: '1:00 PM EST', network: 'YES', barsCount: 45, fanBarsCount: 4 }
       ],
-      fanBars: ['b11', 'b12'],
+      fanBars: ['b11', 'b12', 'b40', 'b45'],
       description: 'New York Yankees - AL East'
     },
     'ny-mets': {
@@ -295,10 +307,10 @@ export default function BarEventsApp() {
       icon: '🔶',
       colors: ['#002D72', '#FF5910'],
       upcomingGames: [
-        { id: 'nym1', opponent: 'Spring Training', date: 'Feb 23', time: '1:00 PM EST', network: 'SNY', barsCount: 25, fanBarsCount: 1 },
-        { id: 'nym2', opponent: 'Opening Day', date: 'Mar 27', time: '7:00 PM EST', network: 'SNY', barsCount: 35, fanBarsCount: 1 }
+        { id: 'nym1', opponent: 'Spring Training', date: 'Feb 23', time: '1:00 PM EST', network: 'SNY', barsCount: 25, fanBarsCount: 2 },
+        { id: 'nym2', opponent: 'Opening Day', date: 'Mar 27', time: '7:00 PM EST', network: 'SNY', barsCount: 35, fanBarsCount: 2 }
       ],
-      fanBars: ['b13'],
+      fanBars: ['b13', 'b44'],
       description: 'New York Mets - NL East'
     },
     'brooklyn-nets': {
@@ -307,11 +319,11 @@ export default function BarEventsApp() {
       icon: '⚫',
       colors: ['#000000', '#FFFFFF'],
       upcomingGames: [
-        { id: 'bkn1', opponent: 'vs 76ers', date: 'Tomorrow', time: '7:30 PM EST', network: 'YES', barsCount: 18, fanBarsCount: 1 },
-        { id: 'bkn2', opponent: '@ Bucks', date: 'Dec 28', time: '8:00 PM EST', network: 'YES', barsCount: 15, fanBarsCount: 1 },
-        { id: 'bkn3', opponent: 'vs Raptors', date: 'Dec 31', time: '7:00 PM EST', network: 'YES', barsCount: 17, fanBarsCount: 1 }
+        { id: 'bkn1', opponent: 'vs 76ers', date: 'Tomorrow', time: '7:30 PM EST', network: 'YES', barsCount: 18, fanBarsCount: 2 },
+        { id: 'bkn2', opponent: '@ Bucks', date: 'Dec 28', time: '8:00 PM EST', network: 'YES', barsCount: 15, fanBarsCount: 2 },
+        { id: 'bkn3', opponent: 'vs Raptors', date: 'Dec 31', time: '7:00 PM EST', network: 'YES', barsCount: 17, fanBarsCount: 2 }
       ],
-      fanBars: ['b15'],
+      fanBars: ['b15', 'b43'],
       description: 'Brooklyn Nets - Eastern Conference'
     },
     'ny-rangers': {
@@ -320,11 +332,11 @@ export default function BarEventsApp() {
       icon: '🔵',
       colors: ['#0038A8', '#CE1126'],
       upcomingGames: [
-        { id: 'nyr1', opponent: 'vs Islanders', date: 'Tomorrow', time: '7:00 PM EST', network: 'MSG', barsCount: 22, fanBarsCount: 1 },
-        { id: 'nyr2', opponent: '@ Devils', date: 'Dec 29', time: '7:30 PM EST', network: 'MSG', barsCount: 20, fanBarsCount: 1 },
-        { id: 'nyr3', opponent: 'vs Bruins', date: 'Jan 2', time: '7:00 PM EST', network: 'MSG', barsCount: 24, fanBarsCount: 1 }
+        { id: 'nyr1', opponent: 'vs Islanders', date: 'Tomorrow', time: '7:00 PM EST', network: 'MSG', barsCount: 22, fanBarsCount: 2 },
+        { id: 'nyr2', opponent: '@ Devils', date: 'Dec 29', time: '7:30 PM EST', network: 'MSG', barsCount: 20, fanBarsCount: 2 },
+        { id: 'nyr3', opponent: 'vs Bruins', date: 'Jan 2', time: '7:00 PM EST', network: 'MSG', barsCount: 24, fanBarsCount: 2 }
       ],
-      fanBars: ['b16'],
+      fanBars: ['b16', 'b42'],
       description: 'New York Rangers - Metropolitan Division'
     },
     'boston-red-sox': {
