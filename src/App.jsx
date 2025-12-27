@@ -38,6 +38,38 @@ export default function BarEventsApp() {
     { id: 'comedy', icon: '🎭', label: 'Comedy Night', description: 'Stand-up or open mic' }
   ];
 
+  // Helper function to get team logo URLs from ESPN CDN
+  const getTeamLogoUrl = (teamId, league = 'nfl') => {
+    const logoMap = {
+      // NFL
+      'Giants': 'https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png',
+      'Jets': 'https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png',
+      'Cowboys': 'https://a.espncdn.com/i/teamlogos/nfl/500/dal.png',
+      'Eagles': 'https://a.espncdn.com/i/teamlogos/nfl/500/phi.png',
+      
+      // NBA
+      'Knicks': 'https://a.espncdn.com/i/teamlogos/nba/500/ny.png',
+      'Nets': 'https://a.espncdn.com/i/teamlogos/nba/500/bkn.png',
+      
+      // MLB
+      'Yankees': 'https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png',
+      'Mets': 'https://a.espncdn.com/i/teamlogos/mlb/500/nym.png',
+      'Red Sox': 'https://a.espncdn.com/i/teamlogos/mlb/500/bos.png',
+      
+      // NHL
+      'Rangers': 'https://a.espncdn.com/i/teamlogos/nhl/500/nyr.png',
+      
+      // Premier League
+      'Manchester United': 'https://a.espncdn.com/i/teamlogos/soccer/500/360.png',
+      
+      // NCAA Football
+      'Pittsburgh Panthers': 'https://a.espncdn.com/i/teamlogos/ncaa/500/221.png'
+    };
+    
+    return logoMap[teamId] || null;
+  };
+
+
   const sportsData = {
     featured: [
       { id: 'nfl2', title: 'Giants vs Bills', sport: 'NFL', teams: 'New York Giants vs Buffalo Bills', homeTeam: 'Giants', awayTeam: 'Bills', time: 'Today • 4:25 PM EST', network: 'CBS', image: '🏈', gradient: 'from-blue-700 to-red-600', barsCount: 18 },
@@ -872,6 +904,49 @@ export default function BarEventsApp() {
         </div>
 
         <div style={{ padding: '20px 16px', paddingBottom: '100px' }}>
+          {/* Team Logo Banner */}
+          {getTeamLogoUrl(selectedTeam.name) && (
+            <div style={{
+              backgroundColor: '#151B3F',
+              borderRadius: '16px',
+              padding: '32px 24px',
+              marginBottom: '28px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '16px',
+              border: '1px solid rgba(255, 255, 255, 0.1)'
+            }}>
+              <img 
+                src={getTeamLogoUrl(selectedTeam.name)} 
+                alt={`${selectedTeam.name} logo`}
+                style={{
+                  width: '120px',
+                  height: '120px',
+                  objectFit: 'contain'
+                }}
+                onError={(e) => { e.target.style.display = 'none'; }}
+              />
+              <div style={{ textAlign: 'center' }}>
+                <h2 style={{
+                  color: '#FFFFFF',
+                  fontSize: '24px',
+                  fontWeight: '700',
+                  margin: '0 0 6px 0'
+                }}>
+                  {selectedTeam.name}
+                </h2>
+                <p style={{
+                  color: '#9CA3B8',
+                  fontSize: '15px',
+                  margin: 0
+                }}>
+                  {selectedTeam.description}
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Upcoming Games */}
           <div style={{ marginBottom: '32px' }}>
             <h2 style={{
@@ -978,6 +1053,33 @@ export default function BarEventsApp() {
                   }}
                   className={`bg-gradient-to-br ${bar.gradient}`}>
                     {bar.image}
+                    {/* Team Logo Badge */}
+                    {bar.teamAffiliation && getTeamLogoUrl(bar.teamAffiliation) && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '12px',
+                        left: '12px',
+                        backgroundColor: '#FFFFFF',
+                        borderRadius: '50%',
+                        padding: '8px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                        width: '56px',
+                        height: '56px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        <img 
+                          src={getTeamLogoUrl(bar.teamAffiliation)} 
+                          alt={`${bar.teamAffiliation} logo`}
+                          style={{
+                            width: '40px',
+                            height: '40px',
+                            objectFit: 'contain'
+                          }}
+                        />
+                      </div>
+                    )}
                     <div style={{
                       position: 'absolute',
                       top: '12px',
@@ -2052,6 +2154,39 @@ export default function BarEventsApp() {
                     cursor: 'pointer'
                   }}
                 >
+                  {/* Team Logos Header */}
+                  {game.homeTeam && game.awayTeam && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      marginBottom: '12px'
+                    }}>
+                      {getTeamLogoUrl(game.homeTeam) && (
+                        <img 
+                          src={getTeamLogoUrl(game.homeTeam)} 
+                          alt={`${game.homeTeam} logo`}
+                          style={{
+                            width: '40px',
+                            height: '40px',
+                            objectFit: 'contain'
+                          }}
+                        />
+                      )}
+                      <span style={{ color: '#9CA3B8', fontSize: '20px', fontWeight: '700' }}>vs</span>
+                      {getTeamLogoUrl(game.awayTeam) && (
+                        <img 
+                          src={getTeamLogoUrl(game.awayTeam)} 
+                          alt={`${game.awayTeam} logo`}
+                          style={{
+                            width: '40px',
+                            height: '40px',
+                            objectFit: 'contain'
+                          }}
+                        />
+                      )}
+                    </div>
+                  )}
                   <div style={{
                     color: '#FFFFFF',
                     fontSize: '16px',
@@ -3015,7 +3150,22 @@ export default function BarEventsApp() {
                   textAlign: 'left'
                 }}
               >
-                <span style={{ fontSize: '28px' }}>{team.icon}</span>
+                {getTeamLogoUrl(team.name) ? (
+                  <img 
+                    src={getTeamLogoUrl(team.name)} 
+                    alt={`${team.name} logo`}
+                    style={{
+                      width: '48px',
+                      height: '48px',
+                      objectFit: 'contain'
+                    }}
+                    onError={(e) => { 
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'block';
+                    }}
+                  />
+                ) : null}
+                <span style={{ fontSize: '28px', display: getTeamLogoUrl(team.name) ? 'none' : 'block' }}>{team.icon}</span>
                 <div style={{ flex: 1 }}>
                   <div style={{
                     color: '#FFFFFF',
@@ -4161,9 +4311,50 @@ export default function BarEventsApp() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '64px'
+                  fontSize: '64px',
+                  position: 'relative',
+                  overflow: 'hidden'
                 }}>
-                  {game.image}
+                  {/* Team Logos if available */}
+                  {game.homeTeam && game.awayTeam && getTeamLogoUrl(game.homeTeam) && getTeamLogoUrl(game.awayTeam) ? (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '16px',
+                      padding: '20px'
+                    }}>
+                      <img 
+                        src={getTeamLogoUrl(game.homeTeam)} 
+                        alt={`${game.homeTeam} logo`}
+                        style={{
+                          width: '64px',
+                          height: '64px',
+                          objectFit: 'contain',
+                          filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))'
+                        }}
+                      />
+                      <span style={{ 
+                        color: 'rgba(255,255,255,0.9)', 
+                        fontSize: '24px', 
+                        fontWeight: '700',
+                        textShadow: '0 2px 8px rgba(0,0,0,0.3)'
+                      }}>
+                        VS
+                      </span>
+                      <img 
+                        src={getTeamLogoUrl(game.awayTeam)} 
+                        alt={`${game.awayTeam} logo`}
+                        style={{
+                          width: '64px',
+                          height: '64px',
+                          objectFit: 'contain',
+                          filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))'
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    game.image
+                  )}
                 </div>
                 <h3 style={{
                   color: '#FFFFFF',
