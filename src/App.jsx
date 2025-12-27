@@ -40,9 +40,9 @@ export default function BarEventsApp() {
 
   const sportsData = {
     featured: [
-      { id: 'sb', title: 'Super Bowl LIX', sport: 'NFL', teams: 'TBD vs TBD', time: 'Feb 9 • 6:30 PM EST', image: '🏈', gradient: 'from-orange-500 to-red-600', barsCount: 45 },
-      { id: 'knicks', title: 'Knicks vs Heat', sport: 'NBA', teams: 'New York Knicks vs Miami Heat', time: 'Tonight • 7:30 PM EST', image: '🏀', gradient: 'from-blue-500 to-orange-600', barsCount: 28, isLocal: true },
-      { id: 'ufc', title: 'UFC 300', sport: 'UFC', teams: 'Main Card', time: 'Saturday • 10:00 PM EST', image: '🥊', gradient: 'from-red-500 to-purple-600', barsCount: 19 }
+      { id: 'nfl2', title: 'Giants vs Bills', sport: 'NFL', teams: 'New York Giants vs Buffalo Bills', homeTeam: 'Giants', awayTeam: 'Bills', time: 'Today • 4:25 PM EST', network: 'CBS', image: '🏈', gradient: 'from-blue-700 to-red-600', barsCount: 18 },
+      { id: 'nba1', title: 'Knicks vs Heat', sport: 'NBA', teams: 'New York Knicks vs Miami Heat', homeTeam: 'Knicks', awayTeam: 'Heat', time: 'Tonight • 7:30 PM EST', network: 'MSG', image: '🏀', gradient: 'from-blue-500 to-orange-600', barsCount: 28, isLocal: true },
+      { id: 'mu1', title: 'Man United Derby', sport: 'Soccer', teams: 'Manchester United vs Manchester City', homeTeam: 'Manchester United', awayTeam: 'Manchester City', time: 'Saturday • 7:30 AM EST', network: 'NBC', image: '⚽', gradient: 'from-red-600 to-blue-600', barsCount: 15 }
     ],
     sports: [
       { id: 'nfl', name: 'NFL', icon: '🏈', gamesCount: 12, gradient: 'from-green-600 to-blue-600' },
@@ -54,14 +54,14 @@ export default function BarEventsApp() {
       { id: 'other', name: 'Other Sports', icon: '🏆', gamesCount: 5, gradient: 'from-purple-500 to-pink-500' }
     ],
     nfl: [
-      { id: 'nfl1', teams: 'Cowboys vs Eagles', time: 'Today • 1:00 PM EST', network: 'FOX', barsCount: 12, fanBars: 2 },
-      { id: 'nfl2', teams: 'Giants vs Bills', time: 'Today • 4:25 PM EST', network: 'CBS', barsCount: 8, fanBars: 1 },
-      { id: 'nfl3', teams: 'Jets vs Patriots', time: 'Sunday • 1:00 PM EST', network: 'CBS', barsCount: 15, fanBars: 3 }
+      { id: 'nfl1', teams: 'Cowboys vs Eagles', homeTeam: 'Cowboys', awayTeam: 'Eagles', time: 'Today • 1:00 PM EST', network: 'FOX', barsCount: 12, fanBars: 2 },
+      { id: 'nfl2', teams: 'Giants vs Bills', homeTeam: 'Giants', awayTeam: 'Bills', time: 'Today • 4:25 PM EST', network: 'CBS', barsCount: 8, fanBars: 1 },
+      { id: 'nfl3', teams: 'Jets vs Patriots', homeTeam: 'Jets', awayTeam: 'Patriots', time: 'Sunday • 1:00 PM EST', network: 'CBS', barsCount: 15, fanBars: 3 }
     ],
     nba: [
-      { id: 'nba1', teams: 'Knicks vs Heat', time: 'Tonight • 7:30 PM EST', network: 'MSG', barsCount: 28, fanBars: 4 },
-      { id: 'nba2', teams: 'Lakers vs Celtics', time: 'Tonight • 8:00 PM EST', network: 'ESPN', barsCount: 18, fanBars: 2 },
-      { id: 'nba3', teams: 'Nets vs 76ers', time: 'Tomorrow • 7:00 PM EST', network: 'YES', barsCount: 12, fanBars: 2 }
+      { id: 'nba1', teams: 'Knicks vs Heat', homeTeam: 'Knicks', awayTeam: 'Heat', time: 'Tonight • 7:30 PM EST', network: 'MSG', barsCount: 28, fanBars: 4 },
+      { id: 'nba2', teams: 'Lakers vs Celtics', homeTeam: 'Lakers', awayTeam: 'Celtics', time: 'Tonight • 8:00 PM EST', network: 'ESPN', barsCount: 18, fanBars: 2 },
+      { id: 'nba3', teams: 'Nets vs 76ers', homeTeam: 'Nets', awayTeam: '76ers', time: 'Tomorrow • 7:00 PM EST', network: 'YES', barsCount: 12, fanBars: 2 }
     ],
     myTeams: [
       { id: 'pitt', name: 'Pittsburgh Panthers', sport: 'NCAA Football', icon: '🏈', nextGame: 'Dec 10 vs Duke', fanBarsCount: 2 },
@@ -69,7 +69,8 @@ export default function BarEventsApp() {
     ]
   };
 
-  const barsShowingGame = [
+  // This will be filtered dynamically based on selected game
+  const allBarsData = [
     { id: 'b1', name: "Murphy's Bar", rating: 4.5, reviews: 120, distance: '0.3 mi', special: '🍺 $5 wings', isFanBar: true, teamAffiliation: 'Cowboys', image: '🏈', gradient: 'from-blue-500 to-gray-600', address: '123 Broadway, New York, NY 10012', description: 'Official Dallas Cowboys fan headquarters in NYC since 2015. Owner is Dallas native and lifelong Cowboys fan.', ownerStory: 'Owner Mike grew up in Dallas and moved to NYC in 2010. Missing his hometown team, he opened this bar to create a community for Cowboys fans.', gameDaySpecials: ['$4 Lone Star Beer during games', 'Wear Cowboys gear - get a free shot', '$20 wings & beer bucket combo', 'Free nachos at halftime when Cowboys lead'], photos: ['Interior with Cowboys memorabilia', 'Game day crowd', 'Signed jerseys on wall', 'Bar exterior'] },
     { id: 'b2', name: "Philly's Tavern", rating: 4.7, reviews: 98, distance: '0.5 mi', special: '🍺 Eagles specials', isFanBar: true, teamAffiliation: 'Eagles', image: '🦅', gradient: 'from-green-600 to-gray-700', address: '456 5th Ave, New York, NY 10018', description: 'The official Philadelphia Eagles bar in Manhattan. Eagles fans have been gathering here for over 20 years.', ownerStory: 'Family-owned by Philly natives since 2003. Three generations of Eagles fans.', gameDaySpecials: ['$3 Yuengling on tap all game', 'Wear Eagles jersey - free cheesesteak slider', '$25 beer bucket (6 beers)', 'Win a signed jersey - raffle every game'], photos: ['Eagles flags everywhere', 'Championship memorabilia', 'Packed game day', 'Owner with Eagles legends'] },
     { id: 'b3', name: "Jack's Sports Bar", rating: 4.3, reviews: 156, distance: '0.7 mi', special: '📺 20+ screens', isFanBar: false, image: '📺', gradient: 'from-gray-600 to-gray-800', address: '789 7th Ave, New York, NY 10019', description: 'Multi-sport bar showing all major games on 20+ HD screens.' },
@@ -2107,6 +2108,31 @@ export default function BarEventsApp() {
   const GameDetailPage = () => {
     if (!selectedGame) return null;
 
+    // Dynamically find bars showing this game based on team affiliations
+    const getBarsForGame = () => {
+      if (!selectedGame.homeTeam && !selectedGame.awayTeam) {
+        // For special events (UFC, etc), show general sports bars
+        return allBarsData.filter(bar => !bar.isFanBar).slice(0, 8);
+      }
+
+      const homeTeam = selectedGame.homeTeam;
+      const awayTeam = selectedGame.awayTeam;
+
+      // Find fan bars for both teams
+      const fanBars = allBarsData.filter(bar => 
+        bar.isFanBar && (
+          bar.teamAffiliation === homeTeam || 
+          bar.teamAffiliation === awayTeam
+        )
+      );
+
+      // Find general sports bars (not fan bars)
+      const generalSportsBars = allBarsData.filter(bar => !bar.isFanBar).slice(0, 6);
+
+      return [...fanBars, ...generalSportsBars];
+    };
+
+    const barsShowingGame = getBarsForGame();
     const fanBars = barsShowingGame.filter(bar => bar.isFanBar);
     const regularBars = barsShowingGame.filter(bar => !bar.isFanBar);
     const allBars = [...fanBars, ...regularBars];
@@ -4089,7 +4115,101 @@ export default function BarEventsApp() {
       </div>
 
       <div style={{ paddingTop: '20px' }}>
-        <CarouselSection title="🏆 Featured Tonight" events={allEvents.featured} />
+        {/* Featured Games - Using sportsData.featured */}
+        <div style={{ marginBottom: '28px' }}>
+          <h2 style={{
+            color: '#FFFFFF',
+            fontSize: '20px',
+            fontWeight: '700',
+            marginBottom: '14px',
+            paddingLeft: '16px'
+          }}>
+            🏆 Featured Tonight
+          </h2>
+          <div style={{
+            display: 'flex',
+            gap: '12px',
+            overflowX: 'auto',
+            paddingLeft: '16px',
+            paddingRight: '16px',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
+          }}>
+            {sportsData.featured.map(game => (
+              <button
+                key={game.id}
+                onClick={() => {
+                  setSelectedGame(game);
+                  setCurrentPage('game-detail');
+                }}
+                style={{
+                  minWidth: '280px',
+                  backgroundColor: '#151B3F',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '12px',
+                  padding: '16px',
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+              >
+                <div style={{
+                  background: `linear-gradient(135deg, ${game.gradient.split(' ')[0].replace('from-', '#')}, ${game.gradient.split(' ')[1].replace('to-', '#')})`,
+                  width: '100%',
+                  height: '140px',
+                  borderRadius: '8px',
+                  marginBottom: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '64px'
+                }}>
+                  {game.image}
+                </div>
+                <h3 style={{
+                  color: '#FFFFFF',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  marginBottom: '6px',
+                  margin: 0
+                }}>
+                  {game.title}
+                </h3>
+                <p style={{
+                  color: '#9CA3B8',
+                  fontSize: '14px',
+                  marginBottom: '8px',
+                  margin: '6px 0'
+                }}>
+                  {game.time}
+                </p>
+                {game.network && (
+                  <p style={{
+                    color: '#FBBF24',
+                    fontSize: '13px',
+                    margin: '4px 0'
+                  }}>
+                    📺 {game.network}
+                  </p>
+                )}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginTop: '8px'
+                }}>
+                  <span style={{
+                    color: '#5B8EFF',
+                    fontSize: '13px',
+                    fontWeight: '500'
+                  }}>
+                    {game.barsCount} bars showing
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
         <CarouselSection title="🎤 Live Music Near You" events={allEvents.music} />
         <CarouselSection title="🧠 Trivia Nights" events={allEvents.trivia} />
         <CarouselSection title="🍺 Happy Hours" events={allEvents.happy} />
