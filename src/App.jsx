@@ -2034,7 +2034,46 @@ export default function BarEventsApp() {
                     position: 'relative'
                   }}
                   className={`bg-gradient-to-br ${game.gradient}`}>
-                    {game.image}
+                    {/* Team Logos if available */}
+                    {game.homeTeam && game.awayTeam && getTeamLogoUrl(game.homeTeam) && getTeamLogoUrl(game.awayTeam) ? (
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '16px'
+                      }}>
+                        <img 
+                          src={getTeamLogoUrl(game.homeTeam)} 
+                          alt={`${game.homeTeam} logo`}
+                          style={{
+                            width: '56px',
+                            height: '56px',
+                            objectFit: 'contain',
+                            filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))'
+                          }}
+                        />
+                        <span style={{ 
+                          color: 'rgba(255,255,255,0.9)', 
+                          fontSize: '20px', 
+                          fontWeight: '700',
+                          textShadow: '0 2px 8px rgba(0,0,0,0.3)'
+                        }}>
+                          VS
+                        </span>
+                        <img 
+                          src={getTeamLogoUrl(game.awayTeam)} 
+                          alt={`${game.awayTeam} logo`}
+                          style={{
+                            width: '56px',
+                            height: '56px',
+                            objectFit: 'contain',
+                            filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))'
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      game.image
+                    )}
                     {game.isLocal && (
                       <div style={{
                         position: 'absolute',
@@ -3307,21 +3346,32 @@ export default function BarEventsApp() {
                 }}
               >
                 {getTeamLogoUrl(team.name) ? (
-                  <img 
-                    src={getTeamLogoUrl(team.name)} 
-                    alt={`${team.name} logo`}
-                    style={{
-                      width: '48px',
-                      height: '48px',
-                      objectFit: 'contain'
-                    }}
-                    onError={(e) => { 
-                      e.target.style.display = 'none';
-                      e.target.nextSibling.style.display = 'block';
-                    }}
-                  />
-                ) : null}
-                <span style={{ fontSize: '28px', display: getTeamLogoUrl(team.name) ? 'none' : 'block' }}>{team.icon}</span>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '6px'
+                  }}>
+                    <img 
+                      src={getTeamLogoUrl(team.name)} 
+                      alt={`${team.name} logo`}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain'
+                      }}
+                      onError={(e) => { 
+                        e.target.parentElement.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <span style={{ fontSize: '28px' }}>{team.icon}</span>
+                )}
                 <div style={{ flex: 1 }}>
                   <div style={{
                     color: '#FFFFFF',
