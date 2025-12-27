@@ -39,34 +39,79 @@ export default function BarEventsApp() {
   ];
 
   // Helper function to get team logo URLs from ESPN CDN
-  const getTeamLogoUrl = (teamId, league = 'nfl') => {
+  const getTeamLogoUrl = (teamId) => {
+    // Normalize team name - handle both "Knicks" and "New York Knicks"
+    const normalized = teamId?.toLowerCase() || '';
+    
     const logoMap = {
-      // NFL
-      'Giants': 'https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png',
-      'Jets': 'https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png',
-      'Cowboys': 'https://a.espncdn.com/i/teamlogos/nfl/500/dal.png',
-      'Eagles': 'https://a.espncdn.com/i/teamlogos/nfl/500/phi.png',
+      // NFL - using both short and full names
+      'giants': 'https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png',
+      'new york giants': 'https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png',
+      'jets': 'https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png',
+      'new york jets': 'https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png',
+      'cowboys': 'https://a.espncdn.com/i/teamlogos/nfl/500/dal.png',
+      'dallas cowboys': 'https://a.espncdn.com/i/teamlogos/nfl/500/dal.png',
+      'eagles': 'https://a.espncdn.com/i/teamlogos/nfl/500/phi.png',
+      'philadelphia eagles': 'https://a.espncdn.com/i/teamlogos/nfl/500/phi.png',
       
       // NBA
-      'Knicks': 'https://a.espncdn.com/i/teamlogos/nba/500/ny.png',
-      'Nets': 'https://a.espncdn.com/i/teamlogos/nba/500/bkn.png',
+      'knicks': 'https://a.espncdn.com/i/teamlogos/nba/500/ny.png',
+      'new york knicks': 'https://a.espncdn.com/i/teamlogos/nba/500/ny.png',
+      'nets': 'https://a.espncdn.com/i/teamlogos/nba/500/bkn.png',
+      'brooklyn nets': 'https://a.espncdn.com/i/teamlogos/nba/500/bkn.png',
+      'lakers': 'https://a.espncdn.com/i/teamlogos/nba/500/lal.png',
+      'los angeles lakers': 'https://a.espncdn.com/i/teamlogos/nba/500/lal.png',
       
       // MLB
-      'Yankees': 'https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png',
-      'Mets': 'https://a.espncdn.com/i/teamlogos/mlb/500/nym.png',
-      'Red Sox': 'https://a.espncdn.com/i/teamlogos/mlb/500/bos.png',
+      'yankees': 'https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png',
+      'new york yankees': 'https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png',
+      'mets': 'https://a.espncdn.com/i/teamlogos/mlb/500/nym.png',
+      'new york mets': 'https://a.espncdn.com/i/teamlogos/mlb/500/nym.png',
+      'red sox': 'https://a.espncdn.com/i/teamlogos/mlb/500/bos.png',
+      'boston red sox': 'https://a.espncdn.com/i/teamlogos/mlb/500/bos.png',
       
       // NHL
-      'Rangers': 'https://a.espncdn.com/i/teamlogos/nhl/500/nyr.png',
+      'rangers': 'https://a.espncdn.com/i/teamlogos/nhl/500/nyr.png',
+      'new york rangers': 'https://a.espncdn.com/i/teamlogos/nhl/500/nyr.png',
       
       // Premier League
-      'Manchester United': 'https://a.espncdn.com/i/teamlogos/soccer/500/360.png',
+      'manchester united': 'https://a.espncdn.com/i/teamlogos/soccer/500/360.png',
+      'liverpool': 'https://a.espncdn.com/i/teamlogos/soccer/500/364.png',
+      'arsenal': 'https://a.espncdn.com/i/teamlogos/soccer/500/359.png',
+      'chelsea': 'https://a.espncdn.com/i/teamlogos/soccer/500/363.png',
       
       // NCAA Football
-      'Pittsburgh Panthers': 'https://a.espncdn.com/i/teamlogos/ncaa/500/221.png'
+      'pittsburgh panthers': 'https://a.espncdn.com/i/teamlogos/ncaa/500/221.png',
+      'alabama crimson tide': 'https://a.espncdn.com/i/teamlogos/ncaa/500/333.png',
+      'ohio state buckeyes': 'https://a.espncdn.com/i/teamlogos/ncaa/500/194.png'
     };
     
-    return logoMap[teamId] || null;
+    return logoMap[normalized] || null;
+  };
+
+  // Helper function to get league/organization logos
+  const getLeagueLogo = (leagueId) => {
+    const leagueLogos = {
+      // Major US Leagues
+      'nfl': 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png',
+      'nba': 'https://a.espncdn.com/i/teamlogos/leagues/500/nba.png',
+      'mlb': 'https://a.espncdn.com/i/teamlogos/leagues/500/mlb.png',
+      'nhl': 'https://a.espncdn.com/i/teamlogos/leagues/500/nhl.png',
+      'mls': 'https://a.espncdn.com/i/teamlogos/leagues/500/mls.png',
+      
+      // NCAA
+      'ncaa-football': 'https://a.espncdn.com/i/teamlogos/leagues/500/ncaa.png',
+      'ncaa-basketball': 'https://a.espncdn.com/i/teamlogos/leagues/500/ncaa.png',
+      
+      // Soccer Leagues - using Wikipedia/Wikimedia
+      'premier-league': 'https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg',
+      'champions-league': 'https://upload.wikimedia.org/wikipedia/en/b/bf/UEFA_Champions_League_logo_2.svg',
+      'la-liga': 'https://upload.wikimedia.org/wikipedia/commons/1/13/LaLiga_2023_Vertical_Logo.svg',
+      'serie-a': 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Serie_A_logo_2022.svg',
+      'bundesliga': 'https://upload.wikimedia.org/wikipedia/en/d/df/Bundesliga_logo_%282017%29.svg'
+    };
+    
+    return leagueLogos[leagueId?.toLowerCase()] || null;
   };
 
 
@@ -2047,7 +2092,22 @@ export default function BarEventsApp() {
                     transition: 'all 0.2s'
                   }}
                 >
-                  <span style={{ fontSize: '40px' }}>{sport.icon}</span>
+                  {getLeagueLogo(sport.id) ? (
+                    <img 
+                      src={getLeagueLogo(sport.id)} 
+                      alt={`${sport.name} logo`}
+                      style={{
+                        width: '56px',
+                        height: '56px',
+                        objectFit: 'contain'
+                      }}
+                      onError={(e) => { 
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <span style={{ fontSize: '40px' }}>{sport.icon}</span>
+                  )}
                   <span style={{
                     color: '#FFFFFF',
                     fontSize: '16px',
@@ -2112,9 +2172,27 @@ export default function BarEventsApp() {
               color: '#FFFFFF',
               fontSize: '20px',
               fontWeight: '700',
-              margin: 0
+              margin: 0,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
             }}>
-              <span style={{ fontSize: '28px', marginRight: '8px' }}>{selectedSport.icon}</span>
+              {getLeagueLogo(selectedSport.id) ? (
+                <img 
+                  src={getLeagueLogo(selectedSport.id)} 
+                  alt={`${selectedSport.name} logo`}
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    objectFit: 'contain'
+                  }}
+                  onError={(e) => { 
+                    e.target.style.display = 'none';
+                  }}
+                />
+              ) : (
+                <span style={{ fontSize: '28px' }}>{selectedSport.icon}</span>
+              )}
               {selectedSport.name}
             </h1>
           </div>
@@ -2987,7 +3065,22 @@ export default function BarEventsApp() {
                 textAlign: 'left'
               }}
             >
-              <span style={{ fontSize: '32px' }}>{org.icon}</span>
+              {getLeagueLogo(org.id) ? (
+                <img 
+                  src={getLeagueLogo(org.id)} 
+                  alt={`${org.name} logo`}
+                  style={{
+                    width: '48px',
+                    height: '48px',
+                    objectFit: 'contain'
+                  }}
+                  onError={(e) => { 
+                    e.target.style.display = 'none';
+                  }}
+                />
+              ) : (
+                <span style={{ fontSize: '32px' }}>{org.icon}</span>
+              )}
               <div style={{ flex: 1 }}>
                 <div style={{
                   color: '#FFFFFF',
@@ -3090,9 +3183,27 @@ export default function BarEventsApp() {
               color: '#FFFFFF',
               fontSize: '20px',
               fontWeight: '700',
-              margin: 0
+              margin: 0,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
             }}>
-              <span style={{ fontSize: '28px', marginRight: '8px' }}>{selectedOrganization.icon}</span>
+              {getLeagueLogo(selectedOrganization.id) ? (
+                <img 
+                  src={getLeagueLogo(selectedOrganization.id)} 
+                  alt={`${selectedOrganization.name} logo`}
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    objectFit: 'contain'
+                  }}
+                  onError={(e) => { 
+                    e.target.style.display = 'none';
+                  }}
+                />
+              ) : (
+                <span style={{ fontSize: '28px' }}>{selectedOrganization.icon}</span>
+              )}
               {selectedOrganization.name}
             </h1>
           </div>
