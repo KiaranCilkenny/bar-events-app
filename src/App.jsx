@@ -824,8 +824,8 @@ export default function BarEventsApp() {
   const TeamDetailPage = () => {
     if (!selectedTeam) return null;
 
-    const fanBarsList = barsShowingGame.filter(bar => selectedTeam.fanBars?.includes(bar.id));
-    const regularBarsList = barsShowingGame.filter(bar => !selectedTeam.fanBars?.includes(bar.id)).slice(0, 5);
+    const fanBarsList = allBarsData.filter(bar => selectedTeam.fanBars?.includes(bar.id));
+    const regularBarsList = allBarsData.filter(bar => !selectedTeam.fanBars?.includes(bar.id)).slice(0, 5);
 
     return (
       <>
