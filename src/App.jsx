@@ -21,12 +21,12 @@ export default function BarEventsApp() {
   const [showSearchResults, setShowSearchResults] = useState(false);
 
   const filters = [
-    { id: 'music', icon: '🎤', label: 'Live Music' },
-    { id: 'trivia', icon: '🧠', label: 'Trivia' },
-    { id: 'happy', icon: '🍺', label: 'Happy Hour' },
-    { id: 'sports', icon: '📺', label: 'Sports' },
-    { id: 'events', icon: '🎉', label: 'Events' },
-    { id: 'comedy', icon: '🎭', label: 'Comedy' }
+    { id: 'nfl', icon: '🏈', label: 'NFL' },
+    { id: 'nba', icon: '🏀', label: 'NBA' },
+    { id: 'mlb', icon: '⚾', label: 'MLB' },
+    { id: 'nhl', icon: '🏒', label: 'NHL' },
+    { id: 'soccer', icon: '⚽', label: 'Soccer' },
+    { id: 'college', icon: '🎓', label: 'College' }
   ];
 
   const eventTemplates = [
@@ -450,12 +450,15 @@ export default function BarEventsApp() {
   };
 
   const handleFilterClick = (filterId) => {
-    // Special handling for sports - go to sports tab instead of filtering
-    if (filterId === 'sports') {
-      setCurrentPage('sports');
+    // Check if it's a sport filter
+    const sportFilters = ['nfl', 'nba', 'mlb', 'nhl', 'soccer', 'college'];
+    if (sportFilters.includes(filterId)) {
+      setActiveFilter(filterId);
+      setCurrentPage('filter');
       return;
     }
     
+    // Old event filters (music, trivia, etc) - in case we need them later
     setActiveFilter(filterId);
     setCurrentPage('filter');
   };
@@ -523,6 +526,33 @@ export default function BarEventsApp() {
   const getFilteredEvents = () => {
     if (!activeFilter) return [];
     return Object.values(allEvents).flat().filter(event => event.category === activeFilter);
+  };
+
+  const getSportGames = () => {
+    if (!activeFilter) return [];
+    
+    const sportMapping = {
+      'nfl': sportsData.nfl || [],
+      'nba': sportsData.nba || [],
+      'mlb': [
+        { id: 'mlb1', title: 'Yankees vs Red Sox', teams: 'Yankees vs Red Sox', homeTeam: 'Yankees', awayTeam: 'Red Sox', time: 'Tonight • 7:05 PM EST', network: 'YES', barsCount: 22, gradient: 'from-navy-800 to-red-700' },
+        { id: 'mlb2', title: 'Mets vs Phillies', teams: 'Mets vs Phillies', homeTeam: 'Mets', awayTeam: 'Phillies', time: 'Tonight • 7:10 PM EST', network: 'SNY', barsCount: 16, gradient: 'from-blue-600 to-orange-600' }
+      ],
+      'nhl': [
+        { id: 'nhl1', title: 'Rangers vs Bruins', teams: 'Rangers vs Bruins', homeTeam: 'Rangers', awayTeam: 'Bruins', time: 'Tonight • 7:00 PM EST', network: 'MSG', barsCount: 14, gradient: 'from-blue-700 to-red-600' },
+        { id: 'nhl2', title: 'Islanders vs Devils', teams: 'Islanders vs Devils', time: 'Tomorrow • 7:30 PM EST', network: 'ESPN+', barsCount: 8, gradient: 'from-orange-600 to-blue-600' }
+      ],
+      'soccer': [
+        { id: 'soccer1', title: 'Man United vs Arsenal', teams: 'Manchester United vs Arsenal', homeTeam: 'Manchester United', awayTeam: 'Arsenal', time: 'Saturday • 12:30 PM EST', network: 'USA', barsCount: 12, gradient: 'from-red-600 to-red-700' },
+        { id: 'soccer2', title: 'Liverpool vs Chelsea', teams: 'Liverpool vs Chelsea', homeTeam: 'Liverpool', awayTeam: 'Chelsea', time: 'Sunday • 11:30 AM EST', network: 'NBC', barsCount: 10, gradient: 'from-red-700 to-blue-600' }
+      ],
+      'college': [
+        { id: 'ncaa1', title: 'Alabama vs Georgia', teams: 'Alabama vs Georgia', homeTeam: 'Alabama Crimson Tide', awayTeam: 'Georgia', time: 'Saturday • 3:30 PM EST', network: 'CBS', barsCount: 8, gradient: 'from-red-700 to-black' },
+        { id: 'ncaa2', title: 'Ohio State vs Michigan', teams: 'Ohio State vs Michigan', homeTeam: 'Ohio State Buckeyes', awayTeam: 'Michigan', time: 'Saturday • 12:00 PM EST', network: 'FOX', barsCount: 6, gradient: 'from-red-600 to-gray-700' }
+      ]
+    };
+    
+    return sportMapping[activeFilter] || [];
   };
 
   const EventCard = ({ event, isVertical = false }) => (
@@ -4528,6 +4558,47 @@ export default function BarEventsApp() {
           <Search size={19} color="#9CA3B8" />
           Team, performer or venue
         </button>
+
+        {/* Sport Filter Pills */}
+        <div style={{
+          display: 'flex',
+          gap: '8px',
+          overflowX: 'auto',
+          paddingTop: '12px',
+          paddingBottom: '4px',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none'
+        }}>
+          {filters.map(filter => (
+            <button
+              key={filter.id}
+              onClick={() => handleFilterClick(filter.id)}
+              style={{
+                backgroundColor: '#151B3F',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                padding: '8px 14px',
+                borderRadius: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                whiteSpace: 'nowrap',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                minWidth: 'fit-content',
+                flexShrink: 0
+              }}
+            >
+              <span style={{ fontSize: '16px' }}>{filter.icon}</span>
+              <span style={{
+                color: '#FFFFFF',
+                fontSize: '13px',
+                fontWeight: '600'
+              }}>
+                {filter.label}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Content - Sport Carousels */}
@@ -4607,7 +4678,13 @@ export default function BarEventsApp() {
   );
 
   const FilterPage = () => {
-    const filteredEvents = getFilteredEvents();
+    const sportFilters = ['nfl', 'nba', 'mlb', 'nhl', 'soccer', 'college'];
+    const isSportFilter = sportFilters.includes(activeFilter);
+    
+    const games = isSportFilter ? getSportGames() : [];
+    const events = !isSportFilter ? getFilteredEvents() : [];
+    const items = isSportFilter ? games : events;
+    
     const filterLabel = filters.find(f => f.id === activeFilter)?.label || '';
     const filterIcon = filters.find(f => f.id === activeFilter)?.icon || '';
 
@@ -4657,15 +4734,160 @@ export default function BarEventsApp() {
             fontSize: '14px',
             paddingLeft: '48px'
           }}>
-            {filteredEvents.length} events near you
+            {items.length} {isSportFilter ? 'games' : 'events'} near you
           </div>
         </div>
 
-        <div style={{ padding: '20px 16px' }}>
-          {filteredEvents.length > 0 ? (
-            filteredEvents.map(event => (
-              <EventCard key={event.id} event={event} isVertical={true} />
-            ))
+        <div style={{ padding: '20px 16px', paddingBottom: '100px' }}>
+          {items.length > 0 ? (
+            isSportFilter ? (
+              // Vertical game cards for sports
+              items.map(game => (
+                <button
+                  key={game.id}
+                  onClick={() => {
+                    setSelectedGame(game);
+                    setCurrentPage('game-detail');
+                  }}
+                  style={{
+                    width: '100%',
+                    backgroundColor: '#151B3F',
+                    border: 'none',
+                    borderRadius: '14px',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    marginBottom: '16px',
+                    position: 'relative'
+                  }}
+                >
+                  {/* Game Image/Hero */}
+                  <div style={{
+                    background: game.gradient ? `linear-gradient(135deg, ${game.gradient.split(' ')[0].replace('from-', '#')}, ${game.gradient.split(' ')[1].replace('to-', '#')})` : '#1E2749',
+                    width: '100%',
+                    height: '160px',
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden'
+                  }}>
+                    {/* TODAY badge */}
+                    {game.time.includes('Today') || game.time.includes('Tonight') ? (
+                      <div style={{
+                        position: 'absolute',
+                        top: '12px',
+                        left: '12px',
+                        backgroundColor: '#5B8EFF',
+                        color: '#FFFFFF',
+                        padding: '6px 12px',
+                        borderRadius: '18px',
+                        fontSize: '11px',
+                        fontWeight: '700',
+                        textTransform: 'uppercase'
+                      }}>
+                        {game.time.includes('Today') ? 'TODAY' : 'TONIGHT'}
+                      </div>
+                    ) : null}
+
+                    {/* Team Logos */}
+                    {game.homeTeam && game.awayTeam && getTeamLogoUrl(game.homeTeam) && getTeamLogoUrl(game.awayTeam) ? (
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '16px',
+                        padding: '20px'
+                      }}>
+                        <img 
+                          src={getTeamLogoUrl(game.homeTeam)} 
+                          alt={game.homeTeam}
+                          style={{
+                            width: '60px',
+                            height: '60px',
+                            objectFit: 'contain',
+                            filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.4))'
+                          }}
+                        />
+                        <span style={{ 
+                          color: 'rgba(255,255,255,0.95)', 
+                          fontSize: '22px', 
+                          fontWeight: '800',
+                          textShadow: '0 2px 10px rgba(0,0,0,0.4)'
+                        }}>
+                          VS
+                        </span>
+                        <img 
+                          src={getTeamLogoUrl(game.awayTeam)} 
+                          alt={game.awayTeam}
+                          style={{
+                            width: '60px',
+                            height: '60px',
+                            objectFit: 'contain',
+                            filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.4))'
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: '52px' }}>{game.image || '🏟️'}</div>
+                    )}
+
+                    {/* Gradient Overlay */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '70px',
+                      background: 'linear-gradient(to top, rgba(0,0,0,0.7), transparent)'
+                    }} />
+                  </div>
+
+                  {/* Game Info */}
+                  <div style={{ padding: '16px' }}>
+                    <h3 style={{
+                      color: '#FFFFFF',
+                      fontSize: '17px',
+                      fontWeight: '700',
+                      marginBottom: '8px',
+                      margin: 0,
+                      lineHeight: '1.3'
+                    }}>
+                      {game.title || game.teams}
+                    </h3>
+                    
+                    <div style={{
+                      color: '#9CA3B8',
+                      fontSize: '14px',
+                      marginBottom: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}>
+                      {game.time}
+                      {game.network && (
+                        <>
+                          <span>•</span>
+                          <span style={{ color: '#FBBF24' }}>{game.network}</span>
+                        </>
+                      )}
+                    </div>
+
+                    <div style={{
+                      color: '#5B8EFF',
+                      fontSize: '15px',
+                      fontWeight: '600'
+                    }}>
+                      {game.barsCount} bars
+                    </div>
+                  </div>
+                </button>
+              ))
+            ) : (
+              // Original event cards
+              events.map(event => (
+                <EventCard key={event.id} event={event} isVertical={true} />
+              ))
+            )
           ) : (
             <div style={{
               textAlign: 'center',
@@ -4674,7 +4896,7 @@ export default function BarEventsApp() {
             }}>
               <div style={{ fontSize: '48px', marginBottom: '16px' }}>😕</div>
               <div style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px', color: '#FFFFFF' }}>
-                No events found
+                No {isSportFilter ? 'games' : 'events'} found
               </div>
             </div>
           )}
