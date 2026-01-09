@@ -1989,148 +1989,6 @@ export default function BarEventsApp() {
               </div>
             </div>
           )}
-
-          {/* Featured Games */}
-          <div style={{ marginBottom: '28px' }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '14px',
-              paddingLeft: '16px',
-              paddingRight: '16px'
-            }}>
-              <h2 style={{
-                color: '#FFFFFF',
-                fontSize: '20px',
-                fontWeight: '700'
-              }}>
-                🏆 Featured Games
-              </h2>
-            </div>
-            <div style={{
-              display: 'flex',
-              gap: '12px',
-              overflowX: 'auto',
-              paddingLeft: '16px',
-              paddingRight: '16px',
-              paddingBottom: '6px',
-              scrollbarWidth: 'thin'
-            }}>
-              {sportsData.featured.map(game => (
-                <div
-                  key={game.id}
-                  onClick={() => {
-                    setSelectedGame(game);
-                    setCurrentPage('game-detail');
-                  }}
-                  style={{
-                    backgroundColor: '#151B3F',
-                    borderRadius: '12px',
-                    overflow: 'hidden',
-                    minWidth: '260px',
-                    maxWidth: '260px',
-                    flexShrink: 0,
-                    cursor: 'pointer',
-                    transition: 'transform 0.2s',
-                    border: game.isLocal ? '2px solid #5B8EFF' : '1px solid rgba(255, 255, 255, 0.05)'
-                  }}
-                >
-                  <div style={{
-                    background: `linear-gradient(135deg, var(--tw-gradient-stops))`,
-                    height: '140px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '56px',
-                    position: 'relative'
-                  }}
-                  className={`bg-gradient-to-br ${game.gradient}`}>
-                    {/* Team Logos if available */}
-                    {game.homeTeam && game.awayTeam && getTeamLogoUrl(game.homeTeam) && getTeamLogoUrl(game.awayTeam) ? (
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '12px',
-                        padding: '16px'
-                      }}>
-                        <img 
-                          src={getTeamLogoUrl(game.homeTeam)} 
-                          alt={`${game.homeTeam} logo`}
-                          style={{
-                            width: '56px',
-                            height: '56px',
-                            objectFit: 'contain',
-                            filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))'
-                          }}
-                        />
-                        <span style={{ 
-                          color: 'rgba(255,255,255,0.9)', 
-                          fontSize: '20px', 
-                          fontWeight: '700',
-                          textShadow: '0 2px 8px rgba(0,0,0,0.3)'
-                        }}>
-                          VS
-                        </span>
-                        <img 
-                          src={getTeamLogoUrl(game.awayTeam)} 
-                          alt={`${game.awayTeam} logo`}
-                          style={{
-                            width: '56px',
-                            height: '56px',
-                            objectFit: 'contain',
-                            filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))'
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      game.image
-                    )}
-                    {game.isLocal && (
-                      <div style={{
-                        position: 'absolute',
-                        top: '10px',
-                        right: '10px',
-                        backgroundColor: '#5B8EFF',
-                        borderRadius: '6px',
-                        padding: '4px 8px',
-                        fontSize: '11px',
-                        fontWeight: '600',
-                        color: '#FFFFFF'
-                      }}>
-                        LOCAL
-                      </div>
-                    )}
-                  </div>
-                  <div style={{ padding: '14px' }}>
-                    <div style={{
-                      color: '#FFFFFF',
-                      fontSize: '15px',
-                      fontWeight: '600',
-                      marginBottom: '4px'
-                    }}>
-                      {game.title}
-                    </div>
-                    <div style={{
-                      color: '#9CA3B8',
-                      fontSize: '13px',
-                      marginBottom: '8px'
-                    }}>
-                      {game.time}
-                    </div>
-                    <div style={{
-                      color: '#5B8EFF',
-                      fontSize: '13px',
-                      fontWeight: '500'
-                    }}>
-                      👀 {game.barsCount} bars showing
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Popular Sports Grid */}
           <div style={{ paddingLeft: '16px', paddingRight: '16px', marginBottom: '28px' }}>
             <h2 style={{
@@ -4336,10 +4194,239 @@ export default function BarEventsApp() {
     );
   };
 
+  // Game Card Component (SeatGeek style)
+  const GameCard = ({ game, onClick }) => (
+    <button
+      onClick={onClick}
+      style={{
+        minWidth: '240px',
+        backgroundColor: '#151B3F',
+        border: 'none',
+        borderRadius: '14px',
+        overflow: 'hidden',
+        cursor: 'pointer',
+        textAlign: 'left',
+        position: 'relative'
+      }}
+    >
+      {/* Game Image/Hero */}
+      <div style={{
+        background: game.gradient ? `linear-gradient(135deg, ${game.gradient.split(' ')[0].replace('from-', '#')}, ${game.gradient.split(' ')[1].replace('to-', '#')})` : '#1E2749',
+        width: '100%',
+        height: '150px',
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden'
+      }}>
+        {/* TODAY badge */}
+        {game.time.includes('Today') || game.time.includes('Tonight') ? (
+          <div style={{
+            position: 'absolute',
+            top: '10px',
+            left: '10px',
+            backgroundColor: '#5B8EFF',
+            color: '#FFFFFF',
+            padding: '5px 10px',
+            borderRadius: '16px',
+            fontSize: '11px',
+            fontWeight: '700',
+            textTransform: 'uppercase'
+          }}>
+            {game.time.includes('Today') ? 'TODAY' : 'TONIGHT'}
+          </div>
+        ) : null}
+
+        {/* Heart Icon */}
+        <div style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          width: '32px',
+          height: '32px',
+          backgroundColor: 'rgba(0, 0, 0, 0.4)',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <Heart size={18} color="#FFFFFF" fill="none" />
+        </div>
+
+        {/* Team Logos */}
+        {game.homeTeam && game.awayTeam && getTeamLogoUrl(game.homeTeam) && getTeamLogoUrl(game.awayTeam) ? (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '14px',
+            padding: '16px'
+          }}>
+            <img 
+              src={getTeamLogoUrl(game.homeTeam)} 
+              alt={game.homeTeam}
+              style={{
+                width: '55px',
+                height: '55px',
+                objectFit: 'contain',
+                filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.4))'
+              }}
+            />
+            <span style={{ 
+              color: 'rgba(255,255,255,0.95)', 
+              fontSize: '20px', 
+              fontWeight: '800',
+              textShadow: '0 2px 10px rgba(0,0,0,0.4)'
+            }}>
+              VS
+            </span>
+            <img 
+              src={getTeamLogoUrl(game.awayTeam)} 
+              alt={game.awayTeam}
+              style={{
+                width: '55px',
+                height: '55px',
+                objectFit: 'contain',
+                filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.4))'
+              }}
+            />
+          </div>
+        ) : (
+          <div style={{ fontSize: '48px' }}>{game.image || '🏟️'}</div>
+        )}
+
+        {/* Gradient Overlay for text readability */}
+        <div style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: '60px',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.7), transparent)'
+        }} />
+      </div>
+
+      {/* Game Info */}
+      <div style={{ padding: '12px 14px' }}>
+        <h3 style={{
+          color: '#FFFFFF',
+          fontSize: '15px',
+          fontWeight: '700',
+          marginBottom: '5px',
+          margin: 0,
+          lineHeight: '1.3',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap'
+        }}>
+          {game.title || game.teams}
+        </h3>
+        
+        <div style={{
+          color: '#9CA3B8',
+          fontSize: '13px',
+          marginBottom: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '5px',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap'
+        }}>
+          {game.time}
+          {game.network && (
+            <>
+              <span>•</span>
+              <span style={{ color: '#FBBF24' }}>{game.network}</span>
+            </>
+          )}
+        </div>
+
+        <div style={{
+          color: '#5B8EFF',
+          fontSize: '14px',
+          fontWeight: '600'
+        }}>
+          {game.barsCount} bars
+        </div>
+      </div>
+    </button>
+  );
+
+  // Sport Carousel Component
+  const SportCarousel = ({ title, games, emoji }) => {
+    if (!games || games.length === 0) return null;
+    
+    return (
+      <div style={{ marginBottom: '32px' }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingLeft: '16px',
+          paddingRight: '16px',
+          marginBottom: '14px'
+        }}>
+          <h2 style={{
+            color: '#FFFFFF',
+            fontSize: '22px',
+            fontWeight: '700',
+            margin: 0,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px'
+          }}>
+            {emoji && <span>{emoji}</span>}
+            {title}
+          </h2>
+          <button
+            style={{
+              backgroundColor: 'transparent',
+              border: 'none',
+              color: '#9CA3B8',
+              fontSize: '15px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            SEE ALL
+            <ChevronRight size={16} />
+          </button>
+        </div>
+        
+        <div style={{
+          display: 'flex',
+          gap: '14px',
+          overflowX: 'auto',
+          paddingLeft: '16px',
+          paddingRight: '16px',
+          paddingBottom: '4px',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none'
+        }}>
+          {games.map(game => (
+            <GameCard 
+              key={game.id} 
+              game={game}
+              onClick={() => {
+                setSelectedGame(game);
+                setCurrentPage('game-detail');
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   const HomePage = () => (
     <>
+      {/* Simple Header */}
       <div style={{
-        padding: '14px 16px',
+        padding: '16px',
         borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
         position: 'sticky',
         top: 0,
@@ -4352,22 +4439,58 @@ export default function BarEventsApp() {
           alignItems: 'center',
           marginBottom: '14px'
         }}>
-          <button style={{
-            backgroundColor: 'transparent',
-            border: 'none',
-            color: '#FFFFFF',
+          {/* App Logo/Name */}
+          <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            fontSize: '16px',
-            fontWeight: '600',
-            cursor: 'pointer'
+            gap: '10px'
           }}>
-            <MapPin size={18} color="#5B8EFF" />
-            Lower Manhattan
-            <ChevronRight size={16} style={{ transform: 'rotate(90deg)' }} />
-          </button>
+            <div style={{
+              backgroundColor: '#5B8EFF',
+              width: '36px',
+              height: '36px',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '20px'
+            }}>
+              🏈
+            </div>
+            <div>
+              <div style={{
+                color: '#FFFFFF',
+                fontSize: '20px',
+                fontWeight: '700',
+                lineHeight: '1.2'
+              }}>
+                BarScout
+              </div>
+              <div style={{
+                color: '#9CA3B8',
+                fontSize: '13px',
+                fontWeight: '500'
+              }}>
+                New York City
+              </div>
+            </div>
+          </div>
+
+          {/* Right Icons */}
           <div style={{ display: 'flex', gap: '10px' }}>
+            <button style={{
+              backgroundColor: '#151B3F',
+              border: 'none',
+              borderRadius: '50%',
+              width: '36px',
+              height: '36px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer'
+            }}>
+              <Bell size={18} color="#FFFFFF" />
+            </button>
             <button style={{
               backgroundColor: '#151B3F',
               border: 'none',
@@ -4381,250 +4504,104 @@ export default function BarEventsApp() {
             }}>
               <User size={18} color="#FFFFFF" />
             </button>
-            <button style={{
-              backgroundColor: '#151B3F',
-              border: 'none',
-              borderRadius: '50%',
-              width: '36px',
-              height: '36px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              position: 'relative'
-            }}>
-              <Bell size={18} color="#FFFFFF" />
-              <span style={{
-                position: 'absolute',
-                top: '7px',
-                right: '7px',
-                width: '8px',
-                height: '8px',
-                backgroundColor: '#ff4444',
-                borderRadius: '50%'
-              }} />
-            </button>
-            <button style={{
-              backgroundColor: '#151B3F',
-              border: 'none',
-              borderRadius: '50%',
-              width: '36px',
-              height: '36px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer'
-            }}>
-              <Heart size={18} color="#FFFFFF" />
-            </button>
           </div>
         </div>
 
-        <div style={{ marginBottom: '14px' }}>
-          <button 
-            onClick={handleSearchClick}
-            style={{
-              backgroundColor: '#151B3F',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '12px',
-              padding: '12px 16px',
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              cursor: 'pointer',
-              fontSize: '15px',
-              fontWeight: '400',
-              color: '#9CA3B8'
-            }}
-          >
-            <Search size={18} color="#9CA3B8" />
-            Search bars & events...
-          </button>
-        </div>
-
-        <div style={{
-          display: 'flex',
-          gap: '8px',
-          overflowX: 'auto',
-          paddingBottom: '4px',
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none'
-        }}>
-          {filters.map(filter => (
-            <button
-              key={filter.id}
-              onClick={() => handleFilterClick(filter.id)}
-              style={{
-                backgroundColor: '#151B3F',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                padding: '10px 16px',
-                borderRadius: '24px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                whiteSpace: 'nowrap',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                minWidth: 'fit-content'
-              }}
-            >
-              <span style={{ fontSize: '20px' }}>{filter.icon}</span>
-              <span style={{
-                color: '#FFFFFF',
-                fontSize: '14px',
-                fontWeight: '500'
-              }}>
-                {filter.label}
-              </span>
-            </button>
-          ))}
-        </div>
+        {/* Search Bar */}
+        <button 
+          onClick={handleSearchClick}
+          style={{
+            backgroundColor: '#151B3F',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '12px',
+            padding: '13px 16px',
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            cursor: 'pointer',
+            fontSize: '15px',
+            fontWeight: '400',
+            color: '#9CA3B8'
+          }}
+        >
+          <Search size={19} color="#9CA3B8" />
+          Team, performer or venue
+        </button>
       </div>
 
-      <div style={{ paddingTop: '20px' }}>
-        {/* Featured Games - Using sportsData.featured */}
-        <div style={{ marginBottom: '28px' }}>
-          <h2 style={{
-            color: '#FFFFFF',
-            fontSize: '20px',
-            fontWeight: '700',
-            marginBottom: '14px',
-            paddingLeft: '16px'
-          }}>
-            🏆 Featured Tonight
-          </h2>
-          <div style={{
-            display: 'flex',
-            gap: '12px',
-            overflowX: 'auto',
-            paddingLeft: '16px',
-            paddingRight: '16px',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none'
-          }}>
-            {sportsData.featured.map(game => (
-              <button
-                key={game.id}
-                onClick={() => {
-                  setSelectedGame(game);
-                  setCurrentPage('game-detail');
-                }}
-                style={{
-                  minWidth: '280px',
-                  backgroundColor: '#151B3F',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '12px',
-                  padding: '16px',
-                  cursor: 'pointer',
-                  textAlign: 'left'
-                }}
-              >
-                <div style={{
-                  background: `linear-gradient(135deg, ${game.gradient.split(' ')[0].replace('from-', '#')}, ${game.gradient.split(' ')[1].replace('to-', '#')})`,
-                  width: '100%',
-                  height: '140px',
-                  borderRadius: '8px',
-                  marginBottom: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '64px',
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}>
-                  {/* Team Logos if available */}
-                  {game.homeTeam && game.awayTeam && getTeamLogoUrl(game.homeTeam) && getTeamLogoUrl(game.awayTeam) ? (
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '16px',
-                      padding: '20px'
-                    }}>
-                      <img 
-                        src={getTeamLogoUrl(game.homeTeam)} 
-                        alt={`${game.homeTeam} logo`}
-                        style={{
-                          width: '64px',
-                          height: '64px',
-                          objectFit: 'contain',
-                          filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))'
-                        }}
-                      />
-                      <span style={{ 
-                        color: 'rgba(255,255,255,0.9)', 
-                        fontSize: '24px', 
-                        fontWeight: '700',
-                        textShadow: '0 2px 8px rgba(0,0,0,0.3)'
-                      }}>
-                        VS
-                      </span>
-                      <img 
-                        src={getTeamLogoUrl(game.awayTeam)} 
-                        alt={`${game.awayTeam} logo`}
-                        style={{
-                          width: '64px',
-                          height: '64px',
-                          objectFit: 'contain',
-                          filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))'
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    game.image
-                  )}
-                </div>
-                <h3 style={{
-                  color: '#FFFFFF',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  marginBottom: '6px',
-                  margin: 0
-                }}>
-                  {game.title}
-                </h3>
-                <p style={{
-                  color: '#9CA3B8',
-                  fontSize: '14px',
-                  marginBottom: '8px',
-                  margin: '6px 0'
-                }}>
-                  {game.time}
-                </p>
-                {game.network && (
-                  <p style={{
-                    color: '#FBBF24',
-                    fontSize: '13px',
-                    margin: '4px 0'
-                  }}>
-                    📺 {game.network}
-                  </p>
-                )}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  marginTop: '8px'
-                }}>
-                  <span style={{
-                    color: '#5B8EFF',
-                    fontSize: '13px',
-                    fontWeight: '500'
-                  }}>
-                    {game.barsCount} bars showing
-                  </span>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
+      {/* Content - Sport Carousels */}
+      <div style={{ paddingTop: '20px', paddingBottom: '80px' }}>
+        {/* Featured Events */}
+        <SportCarousel 
+          title="Featured Events" 
+          emoji="⭐"
+          games={sportsData.featured}
+        />
 
-        <CarouselSection title="🎤 Live Music Near You" events={allEvents.music} />
-        <CarouselSection title="🧠 Trivia Nights" events={allEvents.trivia} />
-        <CarouselSection title="🍺 Happy Hours" events={allEvents.happy} />
-        <CarouselSection title="📺 Sports Viewing" events={allEvents.sports} />
-        <CarouselSection title="🎉 Other Events" events={allEvents.events} />
-        <CarouselSection title="🎭 Comedy Shows" events={allEvents.comedy} />
+        {/* NFL */}
+        <SportCarousel 
+          title="NFL" 
+          emoji="🏈"
+          games={sportsData.nfl}
+        />
+
+        {/* NBA */}
+        <SportCarousel 
+          title="NBA" 
+          emoji="🏀"
+          games={sportsData.nba}
+        />
+
+        {/* College Football - Placeholder (we'll add data later) */}
+        <SportCarousel 
+          title="College Football" 
+          emoji="🏈"
+          games={[
+            { id: 'ncaa1', title: 'Alabama vs Georgia', teams: 'Alabama vs Georgia', homeTeam: 'Alabama Crimson Tide', awayTeam: 'Georgia', time: 'Saturday • 3:30 PM EST', network: 'CBS', barsCount: 8, gradient: 'from-red-700 to-black' },
+            { id: 'ncaa2', title: 'Ohio State vs Michigan', teams: 'Ohio State vs Michigan', homeTeam: 'Ohio State Buckeyes', awayTeam: 'Michigan', time: 'Saturday • 12:00 PM EST', network: 'FOX', barsCount: 6, gradient: 'from-red-600 to-gray-700' }
+          ]}
+        />
+
+        {/* NHL - Placeholder */}
+        <SportCarousel 
+          title="NHL" 
+          emoji="🏒"
+          games={[
+            { id: 'nhl1', title: 'Rangers vs Bruins', teams: 'Rangers vs Bruins', homeTeam: 'Rangers', awayTeam: 'Bruins', time: 'Tonight • 7:00 PM EST', network: 'MSG', barsCount: 14, gradient: 'from-blue-700 to-red-600' },
+            { id: 'nhl2', title: 'Islanders vs Devils', teams: 'Islanders vs Devils', time: 'Tomorrow • 7:30 PM EST', network: 'ESPN+', barsCount: 8, gradient: 'from-orange-600 to-blue-600' }
+          ]}
+        />
+
+        {/* MLB - Placeholder */}
+        <SportCarousel 
+          title="MLB" 
+          emoji="⚾"
+          games={[
+            { id: 'mlb1', title: 'Yankees vs Red Sox', teams: 'Yankees vs Red Sox', homeTeam: 'Yankees', awayTeam: 'Red Sox', time: 'Tonight • 7:05 PM EST', network: 'YES', barsCount: 22, gradient: 'from-navy-800 to-red-700' },
+            { id: 'mlb2', title: 'Mets vs Phillies', teams: 'Mets vs Phillies', homeTeam: 'Mets', awayTeam: 'Phillies', time: 'Tonight • 7:10 PM EST', network: 'SNY', barsCount: 16, gradient: 'from-blue-600 to-orange-600' }
+          ]}
+        />
+
+        {/* Soccer */}
+        <SportCarousel 
+          title="Soccer" 
+          emoji="⚽"
+          games={[
+            { id: 'soccer1', title: 'Man United vs Arsenal', teams: 'Manchester United vs Arsenal', homeTeam: 'Manchester United', awayTeam: 'Arsenal', time: 'Saturday • 12:30 PM EST', network: 'USA', barsCount: 12, gradient: 'from-red-600 to-red-700' },
+            { id: 'soccer2', title: 'Liverpool vs Chelsea', teams: 'Liverpool vs Chelsea', homeTeam: 'Liverpool', awayTeam: 'Chelsea', time: 'Sunday • 11:30 AM EST', network: 'NBC', barsCount: 10, gradient: 'from-red-700 to-blue-600' }
+          ]}
+        />
+
+        {/* College Basketball - Placeholder */}
+        <SportCarousel 
+          title="College Basketball" 
+          emoji="🏀"
+          games={[
+            { id: 'cbb1', title: 'Duke vs UNC', teams: 'Duke vs UNC', time: 'Tonight • 9:00 PM EST', network: 'ESPN', barsCount: 7, gradient: 'from-blue-700 to-blue-400' },
+            { id: 'cbb2', title: 'Kentucky vs Louisville', teams: 'Kentucky vs Louisville', time: 'Saturday • 8:00 PM EST', network: 'CBS', barsCount: 5, gradient: 'from-blue-600 to-red-600' }
+          ]}
+        />
       </div>
     </>
   );
