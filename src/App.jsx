@@ -2,7 +2,7 @@
 // ADD THIS LINE:
 import espnAPI from './espn-api-service.js';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, MapPin, User, Bell, Star, Heart, Search, X } from 'lucide-react';
 
 export default function BarEventsApp() {
