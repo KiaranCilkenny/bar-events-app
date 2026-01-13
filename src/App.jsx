@@ -1,3 +1,9 @@
+import React, { useState, useEffect } from 'react';
+import { ChevronRight, ChevronLeft, MapPin, User, Bell, Star, Heart, Search, X } from 'lucide-react';
+
+// ADD THIS LINE:
+import espnAPI from './espn-api-service.js';
+
 import React, { useState } from 'react';
 import { ChevronRight, ChevronLeft, MapPin, User, Bell, Star, Heart, Search, X } from 'lucide-react';
 
@@ -119,37 +125,69 @@ export default function BarEventsApp() {
     return leagueLogos[leagueId?.toLowerCase()] || null;
   };
 
+// NEW: State for ESPN data
+const [sportsData, setSportsData] = useState({
+  featured: [],
+  sports: [
+    { id: 'nfl', name: 'NFL', icon: '🏈', gamesCount: 0, gradient: 'from-green-600 to-blue-600' },
+    { id: 'nba', name: 'NBA', icon: '🏀', gamesCount: 0, gradient: 'from-orange-500 to-red-600' },
+    { id: 'nhl', name: 'NHL', icon: '🏒', gamesCount: 0, gradient: 'from-blue-500 to-cyan-600' },
+    { id: 'mlb', name: 'MLB', icon: '⚾', gamesCount: 0, gradient: 'from-red-500 to-blue-600' },
+    { id: 'soccer', name: 'Soccer', icon: '⚽', gamesCount: 0, gradient: 'from-green-500 to-blue-500' },
+    { id: 'ufc', name: 'UFC/MMA', icon: '🥊', gamesCount: 0, gradient: 'from-red-600 to-black' },
+  ],
+  nfl: [],
+  nba: [],
+  myTeams: [
+    { id: 'pitt', name: 'Pittsburgh Panthers', sport: 'NCAA Football', icon: '🏈', nextGame: 'Dec 10 vs Duke', fanBarsCount: 2 },
+    { id: 'knicks', name: 'New York Knicks', sport: 'NBA', icon: '🏀', nextGame: 'Tonight vs Heat', fanBarsCount: 4 }
+  ]
+});
 
-  const sportsData = {
-    featured: [
-      { id: 'nfl2', title: 'Giants vs Bills', sport: 'NFL', teams: 'New York Giants vs Buffalo Bills', homeTeam: 'Giants', awayTeam: 'Bills', time: 'Today • 4:25 PM EST', network: 'CBS', image: '🏈', gradient: 'from-blue-700 to-red-600', barsCount: 18 },
-      { id: 'nba1', title: 'Knicks vs Heat', sport: 'NBA', teams: 'New York Knicks vs Miami Heat', homeTeam: 'Knicks', awayTeam: 'Heat', time: 'Tonight • 7:30 PM EST', network: 'MSG', image: '🏀', gradient: 'from-blue-500 to-orange-600', barsCount: 28, isLocal: true },
-      { id: 'mu1', title: 'Man United Derby', sport: 'Soccer', teams: 'Manchester United vs Manchester City', homeTeam: 'Manchester United', awayTeam: 'Manchester City', time: 'Saturday • 7:30 AM EST', network: 'NBC', image: '⚽', gradient: 'from-red-600 to-blue-600', barsCount: 15 }
-    ],
-    sports: [
-      { id: 'nfl', name: 'NFL', icon: '🏈', gamesCount: 12, gradient: 'from-green-600 to-blue-600' },
-      { id: 'nba', name: 'NBA', icon: '🏀', gamesCount: 8, gradient: 'from-orange-500 to-red-600' },
-      { id: 'nhl', name: 'NHL', icon: '🏒', gamesCount: 15, gradient: 'from-blue-500 to-cyan-600' },
-      { id: 'mlb', name: 'MLB', icon: '⚾', gamesCount: 6, gradient: 'from-red-500 to-blue-600' },
-      { id: 'soccer', name: 'Soccer', icon: '⚽', gamesCount: 10, gradient: 'from-green-500 to-blue-500' },
-      { id: 'ufc', name: 'UFC/MMA', icon: '🥊', gamesCount: 3, gradient: 'from-red-600 to-black' },
-      { id: 'other', name: 'Other Sports', icon: '🏆', gamesCount: 5, gradient: 'from-purple-500 to-pink-500' }
-    ],
-    nfl: [
-      { id: 'nfl1', teams: 'Cowboys vs Eagles', homeTeam: 'Cowboys', awayTeam: 'Eagles', time: 'Today • 1:00 PM EST', network: 'FOX', barsCount: 12, fanBars: 2 },
-      { id: 'nfl2', teams: 'Giants vs Bills', homeTeam: 'Giants', awayTeam: 'Bills', time: 'Today • 4:25 PM EST', network: 'CBS', barsCount: 8, fanBars: 1 },
-      { id: 'nfl3', teams: 'Jets vs Patriots', homeTeam: 'Jets', awayTeam: 'Patriots', time: 'Sunday • 1:00 PM EST', network: 'CBS', barsCount: 15, fanBars: 3 }
-    ],
-    nba: [
-      { id: 'nba1', teams: 'Knicks vs Heat', homeTeam: 'Knicks', awayTeam: 'Heat', time: 'Tonight • 7:30 PM EST', network: 'MSG', barsCount: 28, fanBars: 4 },
-      { id: 'nba2', teams: 'Lakers vs Celtics', homeTeam: 'Lakers', awayTeam: 'Celtics', time: 'Tonight • 8:00 PM EST', network: 'ESPN', barsCount: 18, fanBars: 2 },
-      { id: 'nba3', teams: 'Nets vs 76ers', homeTeam: 'Nets', awayTeam: '76ers', time: 'Tomorrow • 7:00 PM EST', network: 'YES', barsCount: 12, fanBars: 2 }
-    ],
-    myTeams: [
-      { id: 'pitt', name: 'Pittsburgh Panthers', sport: 'NCAA Football', icon: '🏈', nextGame: 'Dec 10 vs Duke', fanBarsCount: 2 },
-      { id: 'knicks', name: 'New York Knicks', sport: 'NBA', icon: '🏀', nextGame: 'Tonight vs Heat', fanBarsCount: 4 }
-    ]
-  };
+const [loadingGames, setLoadingGames] = useState(false);
+
+// NEW: Load ESPN data on mount
+useEffect(() => {
+  async function loadESPNGames() {
+    setLoadingGames(true);
+    try {
+      // Get today's games from ESPN
+      const todaysGames = await espnAPI.getTodaysGames();
+      
+      console.log('ESPN Games:', todaysGames); // Let's see what we got!
+      
+      // Transform ESPN data to match our app format
+      const transformedGames = todaysGames.slice(0, 3).map(game => ({
+        id: game.id,
+        title: `${game.awayTeam.name} vs ${game.homeTeam.name}`,
+        sport: game.sport,
+        teams: `${game.awayTeam.name} vs ${game.homeTeam.name}`,
+        homeTeam: game.homeTeam.name,
+        awayTeam: game.awayTeam.name,
+        time: `${game.date} • ${game.time}`,
+        network: game.network,
+        image: game.sportKey === 'nfl' ? '🏈' : game.sportKey === 'nba' ? '🏀' : '⚽',
+        gradient: game.sportKey === 'nfl' ? 'from-blue-700 to-red-600' : 'from-orange-500 to-red-600',
+        barsCount: 15, // We'll calculate this later
+        isLocal: false
+      }));
+      
+      setSportsData(prev => ({
+        ...prev,
+        featured: transformedGames
+      }));
+      
+    } catch (error) {
+      console.error('Error loading ESPN games:', error);
+      // Keep the hardcoded data as fallback
+    } finally {
+      setLoadingGames(false);
+    }
+  }
+  
+  loadESPNGames();
+}, []);
+
 
   // This will be filtered dynamically based on selected game
   const allBarsData = [
