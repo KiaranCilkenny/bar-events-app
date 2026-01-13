@@ -152,10 +152,31 @@ useEffect(() => {
       // Get today's games from ESPN
       const todaysGames = await espnAPI.getTodaysGames();
       
-      console.log('ESPN Games:', todaysGames); // Let's see what we got!
+      console.log('ESPN Games:', todaysGames);
+      
+      // Filter to only show games that haven't happened yet OR happened today
+      const now = new Date();
+      const upcomingGames = todaysGames.filter(game => {
+        const gameTime = new Date(game.fullDate);
+        const hoursDiff = (gameTime - now) / (1000 * 60 * 60);
+        // Show games happening in the future or within last 6 hours (for live/recent games)
+        return hoursDiff > -6;
+      });
+      
+      console.log('Filtered upcoming games:', upcomingGames);
+      
+      // If no games today, get next 7 days
+      let gamesToShow = upcomingGames.slice(0, 3);
+      if (gamesToShow.length === 0) {
+        console.log('No games today, fetching next 7 days...');
+        const nextWeek = new Date();
+        nextWeek.setDate(now.getDate() + 7);
+        const weekGames = await espnAPI.getGamesByDateRange(now, nextWeek);
+        gamesToShow = weekGames.slice(0, 3);
+      }
       
       // Transform ESPN data to match our app format
-      const transformedGames = todaysGames.slice(0, 3).map(game => ({
+      const transformedGames = gamesToShow.map(game => ({
         id: game.id,
         title: `${game.awayTeam.name} vs ${game.homeTeam.name}`,
         sport: game.sport,
@@ -164,9 +185,9 @@ useEffect(() => {
         awayTeam: game.awayTeam.name,
         time: `${game.date} • ${game.time}`,
         network: game.network,
-        image: game.sportKey === 'nfl' ? '🏈' : game.sportKey === 'nba' ? '🏀' : '⚽',
+        image: game.sportKey === 'nfl' ? '🏈' : game.sportKey === 'nba' ? '🏀' : game.sportKey === 'mlb' ? '⚾' : '⚽',
         gradient: game.sportKey === 'nfl' ? 'from-blue-700 to-red-600' : 'from-orange-500 to-red-600',
-        barsCount: 15, // We'll calculate this later
+        barsCount: 15,
         isLocal: false
       }));
       
@@ -177,7 +198,6 @@ useEffect(() => {
       
     } catch (error) {
       console.error('Error loading ESPN games:', error);
-      // Keep the hardcoded data as fallback
     } finally {
       setLoadingGames(false);
     }
