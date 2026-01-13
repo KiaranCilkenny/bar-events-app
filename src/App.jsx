@@ -1,5 +1,3 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronRight, ChevronLeft, MapPin, User, Bell, Star, Heart, Search, X } from 'lucide-react';
 
 // ADD THIS LINE:
 import espnAPI from './espn-api-service.js';
