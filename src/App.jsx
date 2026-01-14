@@ -4420,45 +4420,89 @@ useEffect(() => {
         </div>
 
         {/* Team Logos */}
-        {game.homeTeam && game.awayTeam && getTeamLogoUrl(game.homeTeam) && getTeamLogoUrl(game.awayTeam) ? (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '14px',
-            padding: '16px'
-          }}>
-            <img 
-              src={getTeamLogoUrl(game.homeTeam)} 
-              alt={game.homeTeam}
-              style={{
-                width: '55px',
-                height: '55px',
-                objectFit: 'contain',
-                filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.4))'
-              }}
-            />
-            <span style={{ 
-              color: 'rgba(255,255,255,0.95)', 
-              fontSize: '20px', 
-              fontWeight: '800',
-              textShadow: '0 2px 10px rgba(0,0,0,0.4)'
-            }}>
-              VS
-            </span>
-            <img 
-              src={getTeamLogoUrl(game.awayTeam)} 
-              alt={game.awayTeam}
-              style={{
-                width: '55px',
-                height: '55px',
-                objectFit: 'contain',
-                filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.4))'
-              }}
-            />
-          </div>
-        ) : (
-          <div style={{ fontSize: '48px' }}>{game.image || '🏟️'}</div>
-        )}
+{game.homeTeamLogo && game.awayTeamLogo ? (
+  <div style={{
+    display: 'flex',
+    alignItems: 'center',
+    gap: '14px',
+    padding: '16px'
+  }}>
+    <img 
+      src={game.awayTeamLogo}
+      alt={game.awayTeam}
+      style={{
+        width: '55px',
+        height: '55px',
+        objectFit: 'contain',
+        filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.4))'
+      }}
+      onError={(e) => { e.target.style.display = 'none'; }}
+    />
+    <span style={{ 
+      color: 'rgba(255,255,255,0.95)', 
+      fontSize: '20px', 
+      fontWeight: '800',
+      textShadow: '0 2px 10px rgba(0,0,0,0.4)'
+    }}>
+      VS
+    </span>
+    <img 
+      src={game.homeTeamLogo}
+      alt={game.homeTeam}
+      style={{
+        width: '55px',
+        height: '55px',
+        objectFit: 'contain',
+        filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.4))'
+      }}
+      onError={(e) => { e.target.style.display = 'none'; }}
+    />
+  </div>
+) : game.homeTeam && game.awayTeam && (getTeamLogoUrl(game.homeTeam) || getTeamLogoUrl(game.awayTeam)) ? (
+  <div style={{
+    display: 'flex',
+    alignItems: 'center',
+    gap: '14px',
+    padding: '16px'
+  }}>
+    {getTeamLogoUrl(game.awayTeam) && (
+      <img 
+        src={getTeamLogoUrl(game.awayTeam)}
+        alt={game.awayTeam}
+        style={{
+          width: '55px',
+          height: '55px',
+          objectFit: 'contain',
+          filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.4))'
+        }}
+        onError={(e) => { e.target.style.display = 'none'; }}
+      />
+    )}
+    <span style={{ 
+      color: 'rgba(255,255,255,0.95)', 
+      fontSize: '20px', 
+      fontWeight: '800',
+      textShadow: '0 2px 10px rgba(0,0,0,0.4)'
+    }}>
+      VS
+    </span>
+    {getTeamLogoUrl(game.homeTeam) && (
+      <img 
+        src={getTeamLogoUrl(game.homeTeam)}
+        alt={game.homeTeam}
+        style={{
+          width: '55px',
+          height: '55px',
+          objectFit: 'contain',
+          filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.4))'
+        }}
+        onError={(e) => { e.target.style.display = 'none'; }}
+      />
+    )}
+  </div>
+) : (
+  <div style={{ fontSize: '48px' }}>{game.image || '🏟️'}</div>
+)}
 
         {/* Gradient Overlay for text readability */}
         <div style={{
@@ -4925,46 +4969,90 @@ useEffect(() => {
                       </div>
                     ) : null}
 
-                    {/* Team Logos */}
-                    {game.homeTeam && game.awayTeam && getTeamLogoUrl(game.homeTeam) && getTeamLogoUrl(game.awayTeam) ? (
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '16px',
-                        padding: '20px'
-                      }}>
-                        <img 
-                          src={getTeamLogoUrl(game.homeTeam)} 
-                          alt={game.homeTeam}
-                          style={{
-                            width: '60px',
-                            height: '60px',
-                            objectFit: 'contain',
-                            filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.4))'
-                          }}
-                        />
-                        <span style={{ 
-                          color: 'rgba(255,255,255,0.95)', 
-                          fontSize: '22px', 
-                          fontWeight: '800',
-                          textShadow: '0 2px 10px rgba(0,0,0,0.4)'
-                        }}>
-                          VS
-                        </span>
-                        <img 
-                          src={getTeamLogoUrl(game.awayTeam)} 
-                          alt={game.awayTeam}
-                          style={{
-                            width: '60px',
-                            height: '60px',
-                            objectFit: 'contain',
-                            filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.4))'
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      <div style={{ fontSize: '52px' }}>{game.image || '🏟️'}</div>
-                    )}
+{/* Team Logos */}
+{game.homeTeamLogo && game.awayTeamLogo ? (
+  <div style={{
+    display: 'flex',
+    alignItems: 'center',
+    gap: '14px',
+    padding: '16px'
+  }}>
+    <img 
+      src={game.awayTeamLogo}
+      alt={game.awayTeam}
+      style={{
+        width: '55px',
+        height: '55px',
+        objectFit: 'contain',
+        filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.4))'
+      }}
+      onError={(e) => { e.target.style.display = 'none'; }}
+    />
+    <span style={{ 
+      color: 'rgba(255,255,255,0.95)', 
+      fontSize: '20px', 
+      fontWeight: '800',
+      textShadow: '0 2px 10px rgba(0,0,0,0.4)'
+    }}>
+      VS
+    </span>
+    <img 
+      src={game.homeTeamLogo}
+      alt={game.homeTeam}
+      style={{
+        width: '55px',
+        height: '55px',
+        objectFit: 'contain',
+        filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.4))'
+      }}
+      onError={(e) => { e.target.style.display = 'none'; }}
+    />
+  </div>
+) : game.homeTeam && game.awayTeam && (getTeamLogoUrl(game.homeTeam) || getTeamLogoUrl(game.awayTeam)) ? (
+  <div style={{
+    display: 'flex',
+    alignItems: 'center',
+    gap: '14px',
+    padding: '16px'
+  }}>
+    {getTeamLogoUrl(game.awayTeam) && (
+      <img 
+        src={getTeamLogoUrl(game.awayTeam)}
+        alt={game.awayTeam}
+        style={{
+          width: '55px',
+          height: '55px',
+          objectFit: 'contain',
+          filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.4))'
+        }}
+        onError={(e) => { e.target.style.display = 'none'; }}
+      />
+    )}
+    <span style={{ 
+      color: 'rgba(255,255,255,0.95)', 
+      fontSize: '20px', 
+      fontWeight: '800',
+      textShadow: '0 2px 10px rgba(0,0,0,0.4)'
+    }}>
+      VS
+    </span>
+    {getTeamLogoUrl(game.homeTeam) && (
+      <img 
+        src={getTeamLogoUrl(game.homeTeam)}
+        alt={game.homeTeam}
+        style={{
+          width: '55px',
+          height: '55px',
+          objectFit: 'contain',
+          filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.4))'
+        }}
+        onError={(e) => { e.target.style.display = 'none'; }}
+      />
+    )}
+  </div>
+) : (
+  <div style={{ fontSize: '48px' }}>{game.image || '🏟️'}</div>
+)}
 
                     {/* Gradient Overlay */}
                     <div style={{
