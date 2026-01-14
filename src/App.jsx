@@ -149,46 +149,125 @@ useEffect(() => {
   async function loadESPNGames() {
     setLoadingGames(true);
     try {
-      // Get today's games from ESPN
-      const todaysGames = await espnAPI.getTodaysGames();
-      
-      console.log('ESPN Games:', todaysGames);
-      
-      // Filter to only show games that haven't happened yet OR happened today
+      // Get next 2 days of games
       const now = new Date();
-      const upcomingGames = todaysGames.filter(game => {
+      const twoDaysFromNow = new Date();
+      twoDaysFromNow.setDate(now.getDate() + 2);
+      
+      const allGames = await espnAPI.getGamesByDateRange(now, twoDaysFromNow);
+      
+      console.log('ESPN Games (next 2 days):', allGames);
+      
+      // NY Teams list
+      const nyTeams = [
+        'knicks', 'new york knicks', 'nets', 'brooklyn nets',
+        'giants', 'new york giants', 'jets', 'new york jets',
+        'yankees', 'new york yankees', 'mets', 'new york mets',
+        'rangers', 'new york rangers', 'islanders', 'new york islanders',
+        'bills', 'buffalo bills' // Adding Bills
+      ];
+      
+      // Rivalry matchups (can expand this list)
+      const rivalries = [
+        ['yankees', 'red sox'],
+        ['mets', 'phillies'],
+        ['giants', 'cowboys'],
+        ['giants', 'eagles'],
+        ['jets', 'patriots'],
+        ['knicks', 'celtics'],
+        ['knicks', 'heat'],
+        ['rangers', 'devils'],
+        ['rangers', 'islanders']
+      ];
+      
+      // Helper: Check if team is NY team
+      const isNYTeam = (teamName) => {
+        const normalized = teamName?.toLowerCase() || '';
+        return nyTeams.some(nyTeam => normalized.includes(nyTeam));
+      };
+      
+      // Helper: Check if game is a rivalry
+      const isRivalryGame = (game) => {
+        const home = game.homeTeam?.name?.toLowerCase() || '';
+        const away = game.awayTeam?.name?.toLowerCase() || '';
+        
+        return rivalries.some(([team1, team2]) => {
+          return (home.includes(team1) && away.includes(team2)) ||
+                 (home.includes(team2) && away.includes(team1));
+        });
+      };
+      
+      // Helper: Check if playoff game (ESPN includes this in status or event name)
+      const isPlayoffGame = (game) => {
+        const name = game.name?.toLowerCase() || '';
+        const status = game.statusDetail?.toLowerCase() || '';
+        return name.includes('playoff') || 
+               name.includes('wild card') || 
+               name.includes('divisional') ||
+               name.includes('championship') ||
+               name.includes('finals') ||
+               name.includes('conference') ||
+               status.includes('playoff');
+      };
+      
+      // Score each game for priority
+      const scoredGames = allGames.map(game => {
+        let score = 0;
+        const hasNYTeam = isNYTeam(game.homeTeam?.name) || isNYTeam(game.awayTeam?.name);
+        const isPlayoff = isPlayoffGame(game);
+        const isRivalry = isRivalryGame(game);
+        const isPPV = game.sportKey === 'ufc'; // UFC is typically PPV
+        
+        // Priority scoring
+        if (isPlayoff && hasNYTeam) score += 1000; // Highest priority
+        else if (isPlayoff) score += 900;
+        else if (hasNYTeam) score += 800;
+        if (isPPV) score += 700;
+        if (isRivalry) score += 600;
+        
+        // Bonus for happening sooner
         const gameTime = new Date(game.fullDate);
-        const hoursDiff = (gameTime - now) / (1000 * 60 * 60);
-        // Show games happening in the future or within last 6 hours (for live/recent games)
-        return hoursDiff > -6;
+        const hoursUntilGame = (gameTime - now) / (1000 * 60 * 60);
+        score += Math.max(0, 100 - hoursUntilGame); // Earlier games get slight boost
+        
+        return { ...game, priorityScore: score };
       });
       
-      console.log('Filtered upcoming games:', upcomingGames);
+      // Sort by priority score
+      scoredGames.sort((a, b) => b.priorityScore - a.priorityScore);
       
-      // If no games today, get next 7 days
-      let gamesToShow = upcomingGames.slice(0, 3);
-      if (gamesToShow.length === 0) {
-        console.log('No games today, fetching next 7 days...');
-        const nextWeek = new Date();
-        nextWeek.setDate(now.getDate() + 7);
-        const weekGames = await espnAPI.getGamesByDateRange(now, nextWeek);
-        gamesToShow = weekGames.slice(0, 3);
-      }
+      console.log('Prioritized games:', scoredGames.map(g => ({
+        name: g.name,
+        score: g.priorityScore,
+        sport: g.sport
+      })));
+      
+      // Take top 3 for featured
+      const featuredGames = scoredGames.slice(0, 3);
       
       // Transform ESPN data to match our app format
-      const transformedGames = gamesToShow.map(game => ({
+      const transformedGames = featuredGames.map(game => ({
         id: game.id,
         title: `${game.awayTeam.name} vs ${game.homeTeam.name}`,
         sport: game.sport,
         teams: `${game.awayTeam.name} vs ${game.homeTeam.name}`,
         homeTeam: game.homeTeam.name,
         awayTeam: game.awayTeam.name,
+        homeTeamLogo: game.homeTeam.logo, // ← ESPN logo URL
+        awayTeamLogo: game.awayTeam.logo, // ← ESPN logo URL
         time: `${game.date} • ${game.time}`,
         network: game.network,
-        image: game.sportKey === 'nfl' ? '🏈' : game.sportKey === 'nba' ? '🏀' : game.sportKey === 'mlb' ? '⚾' : '⚽',
-        gradient: game.sportKey === 'nfl' ? 'from-blue-700 to-red-600' : 'from-orange-500 to-red-600',
+        image: game.sportKey === 'nfl' ? '🏈' : 
+               game.sportKey === 'nba' ? '🏀' : 
+               game.sportKey === 'mlb' ? '⚾' : 
+               game.sportKey === 'nhl' ? '🏒' :
+               game.sportKey === 'ufc' ? '🥊' : '⚽',
+        gradient: game.sportKey === 'nfl' ? 'from-blue-700 to-red-600' : 
+                  game.sportKey === 'nba' ? 'from-orange-500 to-red-600' :
+                  game.sportKey === 'ufc' ? 'from-red-600 to-black' :
+                  'from-green-600 to-blue-600',
         barsCount: 15,
-        isLocal: false
+        isLocal: isNYTeam(game.homeTeam?.name) || isNYTeam(game.awayTeam?.name)
       }));
       
       setSportsData(prev => ({
