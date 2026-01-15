@@ -30,10 +30,53 @@ const SPORTS_CONFIG = {
     name: 'UFC',
     icon: '🥊'
   },
-  premierLeague: {
-    path: 'soccer/eng.1',
+  'college-football': {
+    path: 'football/college-football',
+    name: 'College Football',
+    icon: '🏈',
+    league: 'College Football'
+  },
+  'mens-college-basketball': {
+    path: 'basketball/mens-college-basketball',
+    name: 'College Basketball',
+    icon: '🏀',
+    league: 'NCAA Basketball'
+  },
+  soccer: {
+    path: 'soccer/eng.1',  // Premier League
     name: 'Premier League',
-    icon: '⚽'
+    icon: '⚽',
+    league: 'Premier League'
+  },
+  'soccer-champions': {
+    path: 'soccer/uefa.champions',
+    name: 'Champions League',
+    icon: '⚽',
+    league: 'Champions League'
+  },
+  'soccer-laliga': {
+    path: 'soccer/esp.1',
+    name: 'La Liga',
+    icon: '⚽',
+    league: 'La Liga'
+  },
+  'soccer-mls': {
+    path: 'soccer/usa.1',
+    name: 'MLS',
+    icon: '⚽',
+    league: 'MLS'
+  },
+  'soccer-seriea': {
+    path: 'soccer/ita.1',
+    name: 'Serie A',
+    icon: '⚽',
+    league: 'Serie A'
+  },
+  'soccer-bundesliga': {
+    path: 'soccer/ger.1',
+    name: 'Bundesliga',
+    icon: '⚽',
+    league: 'Bundesliga'
   }
 };
 
@@ -118,10 +161,11 @@ function transformGame(espnGame, sport) {
     timeZoneName: 'short'
   });
   
-  return {
+return {
     id: espnGame.id,
     sport: SPORTS_CONFIG[sport].name,
-    sportKey: sport,
+    sportKey: sport.includes('soccer') ? 'soccer' : sport, // Normalize all soccer leagues to 'soccer'
+    league: SPORTS_CONFIG[sport].league || SPORTS_CONFIG[sport].name,
     name: espnGame.name,
     shortName: espnGame.shortName,
     date: dateDisplay,
