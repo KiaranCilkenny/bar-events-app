@@ -123,18 +123,26 @@ export default function BarEventsApp() {
 
   const [loadingGames, setLoadingGames] = useState(false);
 
-  useEffect(() => {
+useEffect(() => {
     async function loadESPNGames() {
       setLoadingGames(true);
       try {
         const now = new Date();
         const twoDaysFromNow = new Date();
         twoDaysFromNow.setDate(now.getDate() + 2);
+        const fourteenDaysFromNow = new Date();
+        fourteenDaysFromNow.setDate(now.getDate() + 14);
         
-        const allGames = await espnAPI.getGamesByDateRange(now, twoDaysFromNow);
+        // Get games for next 2 days (priority) and next 14 days (backup)
+        const priorityGames = await espnAPI.getGamesByDateRange(now, twoDaysFromNow);
+        const extendedGames = await espnAPI.getGamesByDateRange(twoDaysFromNow, fourteenDaysFromNow);
         
-        console.log('ESPN Games (next 2 days):', allGames);
+        console.log('Priority Games (next 2 days):', priorityGames.length);
+        console.log('Extended Games (2-14 days):', extendedGames.length);
         
+        const allGames = [...priorityGames, ...extendedGames];
+        
+        // NY Teams
         const nyTeams = [
           'knicks', 'new york knicks', 'nets', 'brooklyn nets',
           'giants', 'new york giants', 'jets', 'new york jets',
@@ -143,15 +151,18 @@ export default function BarEventsApp() {
           'bills', 'buffalo bills'
         ];
         
+        // Flagged Soccer Teams
+        const flaggedSoccerTeams = [
+          'manchester united', 'manchester city', 'chelsea', 'arsenal',
+          'barcelona', 'liverpool', 'real madrid', 'tottenham',
+          'newcastle', 'aston villa'
+        ];
+        
         const rivalries = [
-          ['yankees', 'red sox'],
-          ['mets', 'phillies'],
-          ['giants', 'cowboys'],
-          ['giants', 'eagles'],
-          ['jets', 'patriots'],
-          ['knicks', 'celtics'],
-          ['knicks', 'heat'],
-          ['rangers', 'devils'],
+          ['yankees', 'red sox'], ['mets', 'phillies'],
+          ['giants', 'cowboys'], ['giants', 'eagles'],
+          ['jets', 'patriots'], ['knicks', 'celtics'],
+          ['knicks', 'heat'], ['rangers', 'devils'],
           ['rangers', 'islanders']
         ];
         
@@ -160,10 +171,14 @@ export default function BarEventsApp() {
           return nyTeams.some(nyTeam => normalized.includes(nyTeam));
         };
         
+        const isFlaggedSoccerTeam = (teamName) => {
+          const normalized = teamName?.toLowerCase() || '';
+          return flaggedSoccerTeams.some(flaggedTeam => normalized.includes(flaggedTeam));
+        };
+        
         const isRivalryGame = (game) => {
           const home = game.homeTeam?.name?.toLowerCase() || '';
           const away = game.awayTeam?.name?.toLowerCase() || '';
-          
           return rivalries.some(([team1, team2]) => {
             return (home.includes(team1) && away.includes(team2)) ||
                    (home.includes(team2) && away.includes(team1));
@@ -180,6 +195,18 @@ export default function BarEventsApp() {
                  name.includes('finals') ||
                  name.includes('conference') ||
                  status.includes('playoff');
+        };
+        
+        const getSoccerLeaguePriority = (game) => {
+          const league = game.league?.toLowerCase() || '';
+          if (league.includes('premier') || league.includes('epl')) return 1000;
+          if (league.includes('champions')) return 900;
+          if (league.includes('la liga') || league.includes('laliga')) return 800;
+          if (league.includes('mls')) return 700;
+          if (league.includes('serie a')) return 600;
+          if (league.includes('bundesliga')) return 500;
+          if (league.includes('liga mx') || league.includes('ligamx')) return 400;
+          return 0;
         };
         
         const transformGame = (game) => ({
@@ -205,31 +232,49 @@ export default function BarEventsApp() {
                     'from-green-600 to-blue-600',
           barsCount: 15,
           isLocal: isNYTeam(game.homeTeam?.name) || isNYTeam(game.awayTeam?.name),
-          fullDate: game.fullDate
+          fullDate: game.fullDate,
+          isPriority: priorityGames.some(pg => pg.id === game.id)
         });
         
+        // Score all games
         const scoredGames = allGames.map(game => {
           let score = 0;
           const hasNYTeam = isNYTeam(game.homeTeam?.name) || isNYTeam(game.awayTeam?.name);
           const isPlayoff = isPlayoffGame(game);
           const isRivalry = isRivalryGame(game);
           const isPPV = game.sportKey === 'ufc';
+          const isInNext2Days = priorityGames.some(pg => pg.id === game.id);
           
-          if (isPlayoff && hasNYTeam) score += 1000;
-          else if (isPlayoff) score += 900;
-          else if (hasNYTeam) score += 800;
-          if (isPPV) score += 700;
-          if (isRivalry) score += 600;
+          // Featured Events scoring (for all sports)
+          if (isPlayoff && hasNYTeam) score += 10000;
+          else if (isPlayoff) score += 9000;
+          else if (hasNYTeam) score += 8000;
+          if (isPPV) score += 7000;
+          if (isRivalry) score += 6000;
           
-          const gameTime = new Date(game.fullDate);
-          const hoursUntilGame = (gameTime - now) / (1000 * 60 * 60);
-          score += Math.max(0, 100 - hoursUntilGame);
+          // Soccer-specific scoring
+          if (game.sportKey === 'soccer') {
+            const hasFlaggedTeam = isFlaggedSoccerTeam(game.homeTeam?.name) || isFlaggedSoccerTeam(game.awayTeam?.name);
+            const leaguePriority = getSoccerLeaguePriority(game);
+            
+            if (hasFlaggedTeam) score += 5000;
+            score += leaguePriority;
+          }
+          
+          // Time proximity bonus
+          if (isInNext2Days) {
+            const gameTime = new Date(game.fullDate);
+            const hoursUntilGame = (gameTime - now) / (1000 * 60 * 60);
+            score += Math.max(0, 100 - hoursUntilGame);
+          }
           
           return { ...game, priorityScore: score };
         });
         
+        // Sort by priority score
         scoredGames.sort((a, b) => b.priorityScore - a.priorityScore);
         
+        // Separate by sport
         const nflGames = scoredGames.filter(g => g.sportKey === 'nfl');
         const nbaGames = scoredGames.filter(g => g.sportKey === 'nba');
         const nhlGames = scoredGames.filter(g => g.sportKey === 'nhl');
@@ -238,10 +283,17 @@ export default function BarEventsApp() {
         const collegeFootballGames = scoredGames.filter(g => g.sportKey === 'college-football');
         const collegeBasketballGames = scoredGames.filter(g => g.sportKey === 'mens-college-basketball');
         
-        console.log('Prioritized games:', scoredGames.map(g => ({
+        console.log('Prioritized Featured Games:', scoredGames.slice(0, 5).map(g => ({
           name: g.name,
           score: g.priorityScore,
-          sport: g.sport
+          sport: g.sport,
+          isPriority: g.isPriority
+        })));
+        
+        console.log('Soccer Games:', soccerGames.slice(0, 5).map(g => ({
+          name: g.name,
+          score: g.priorityScore,
+          league: g.league
         })));
         
         setSportsData(prev => ({
@@ -763,23 +815,61 @@ export default function BarEventsApp() {
       </div>
 
       <div style={{ paddingTop: '20px', paddingBottom: '80px' }}>
-        {loadingGames ? (
-          <div style={{ textAlign: 'center', padding: '60px 20px', color: '#9CA3B8' }}>
-            <div style={{ fontSize: '48px', marginBottom: '16px' }}>⏳</div>
-            <div style={{ fontSize: '18px' }}>Loading games...</div>
-          </div>
-        ) : (
+  {loadingGames ? (
+    <div style={{ textAlign: 'center', padding: '60px 20px', color: '#9CA3B8' }}>
+      <div style={{ fontSize: '48px', marginBottom: '16px' }}>⏳</div>
+      <div style={{ fontSize: '18px' }}>Loading games...</div>
+    </div>
+  ) : (
+    <>
+      <SportCarousel title="Featured Events" emoji="⭐" games={sportsData.featured} />
+      
+      {/* Dynamic ordering: Sports with games in next 2 days first, then others */}
+      {(() => {
+        const sportOrder = [
+          { key: 'nfl', title: 'NFL', sportKey: 'nfl', games: sportsData.nfl },
+          { key: 'nba', title: 'NBA', sportKey: 'nba', games: sportsData.nba },
+          { key: 'nhl', title: 'NHL', sportKey: 'nhl', games: sportsData.nhl },
+          { key: 'cfb', title: 'College Football', sportKey: 'ncaa-football', games: sportsData.collegeFootball },
+          { key: 'soccer', title: 'Soccer', emoji: '⚽', games: sportsData.soccer },
+          { key: 'cbb', title: 'College Basketball', sportKey: 'ncaa-basketball', games: sportsData.collegeBasketball }
+        ];
+        
+        // Separate sports with priority games vs extended games
+        const sportsWithPriorityGames = sportOrder.filter(sport => 
+          sport.games?.some(game => game.isPriority)
+        );
+        const sportsWithOnlyExtendedGames = sportOrder.filter(sport => 
+          sport.games?.length > 0 && !sport.games.some(game => game.isPriority)
+        );
+        
+        return (
           <>
-            <SportCarousel title="Featured Events" emoji="⭐" games={sportsData.featured} />
-            <SportCarousel title="NFL" sportKey="nfl" games={sportsData.nfl} />
-            <SportCarousel title="NBA" sportKey="nba" games={sportsData.nba} />
-            <SportCarousel title="NHL" sportKey="nhl" games={sportsData.nhl} />
-            <SportCarousel title="College Football" sportKey="ncaa-football" games={sportsData.collegeFootball} />
-            <SportCarousel title="Soccer" emoji="⚽" games={sportsData.soccer} />
-            <SportCarousel title="College Basketball" sportKey="ncaa-basketball" games={sportsData.collegeBasketball} />
+            {sportsWithPriorityGames.map(sport => (
+              <SportCarousel 
+                key={sport.key}
+                title={sport.title}
+                emoji={sport.emoji}
+                sportKey={sport.sportKey}
+                games={sport.games}
+              />
+            ))}
+            {sportsWithOnlyExtendedGames.map(sport => (
+              <SportCarousel 
+                key={sport.key}
+                title={sport.title}
+                emoji={sport.emoji}
+                sportKey={sport.sportKey}
+                games={sport.games}
+              />
+            ))}
           </>
-        )}
-      </div>
+        );
+      })()}
+    </>
+  )}
+</div>
+      
     </>
   );
 
