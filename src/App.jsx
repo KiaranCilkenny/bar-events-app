@@ -811,9 +811,6 @@ useEffect(() => {
           🏗️ Add Bar (Admin)
         </button>
 
-        <div style={{
-          display: 'flex',
-          gap: '8px',
 
         <div style={{
           display: 'flex',
