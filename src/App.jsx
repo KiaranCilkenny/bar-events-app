@@ -2507,9 +2507,12 @@ const BarCollectorPage = () => {
           Step 1: Fetch from Google Places
         </h2>
         
-        <input 
+<input 
           value={collectorBarName}
-          onChange={(e) => setCollectorBarName(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            setCollectorBarName(value);
+          }}
           placeholder="Enter bar name (e.g., 'Smithfield Hall')"
           style={{
             width: '100%',
@@ -2521,7 +2524,11 @@ const BarCollectorPage = () => {
             fontSize: '15px',
             marginBottom: '12px'
           }}
-          onKeyPress={(e) => e.key === 'Enter' && !loadingBarData && collectorBarName && fetchBar()}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !loadingBarData && collectorBarName) {
+              fetchBar();
+            }
+          }}
         />
         
         <button 
