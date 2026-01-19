@@ -2741,97 +2741,103 @@ const BarCollectorPage = () => {
   );
 };
   
-  return (
-    <div style={{
-      backgroundColor: '#0A0E27',
-      minHeight: '100vh',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      paddingBottom: '80px',
-      maxWidth: '430px',
-      margin: '0 auto',
-      position: 'relative'
-    }}>
-      {currentPage === 'home' && <HomePage />}
-      {currentPage === 'search' && <SearchPage />}
-      {currentPage === 'filter' && <FilterPage />}
-      {currentPage === 'game-detail' && <GameDetailPage />}
-      {currentPage === 'sports' && <SportsLandingPage />}
-      {currentPage === 'sports-search' && <SportsSearchPage />}
-      {currentPage === 'sport-games' && <SportGamesPage />}
-      {currentPage === 'sport-az' && <SportAZPage />}
-      {currentPage === 'organization-teams' && <OrganizationTeamsPage />}
-      {currentPage === 'team-detail' && <TeamDetailPage />}
-      {currentPage === 'bar-detail' && <BarDetailPage />}
+return (
+  <div style={{
+    backgroundColor: '#0A0E27',
+    minHeight: '100vh',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    paddingBottom: '80px',
+    maxWidth: '430px',
+    margin: '0 auto',
+    position: 'relative'
+  }}>
+    {showBarCollector ? (
+      <BarCollectorPage />
+    ) : (
+      <>
+        {currentPage === 'home' && <HomePage />}
+        {currentPage === 'search' && <SearchPage />}
+        {currentPage === 'filter' && <FilterPage />}
+        {currentPage === 'game-detail' && <GameDetailPage />}
+        {currentPage === 'sports' && <SportsLandingPage />}
+        {currentPage === 'sports-search' && <SportsSearchPage />}
+        {currentPage === 'sport-games' && <SportGamesPage />}
+        {currentPage === 'sport-az' && <SportAZPage />}
+        {currentPage === 'organization-teams' && <OrganizationTeamsPage />}
+        {currentPage === 'team-detail' && <TeamDetailPage />}
+        {currentPage === 'bar-detail' && <BarDetailPage />}
 
-      {/* Bottom Navigation */}
-      {(currentPage === 'home' || currentPage === 'sports' || currentPage === 'profile') && (
-        <div style={{
-          position: 'fixed',
-          bottom: 0,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '100%',
-          maxWidth: '430px',
-          backgroundColor: '#151B3F',
-          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-          display: 'flex',
-          justifyContent: 'space-around',
-          padding: '10px 0 10px 0',
-          zIndex: 100
-        }}>
-          <button 
-            onClick={() => setCurrentPage('home')}
-            style={{
-            backgroundColor: 'transparent',
-            border: 'none',
-            color: currentPage === 'home' ? '#5B8EFF' : '#9CA3B8',
+        {/* Bottom Navigation */}
+        {(currentPage === 'home' || currentPage === 'sports' || currentPage === 'profile') && (
+          <div style={{
+            position: 'fixed',
+            bottom: 0,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '100%',
+            maxWidth: '430px',
+            backgroundColor: '#151B3F',
+            borderTop: '1px solid rgba(255, 255, 255, 0.1)',
             display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '4px',
-            cursor: 'pointer',
-            fontSize: '11px',
-            fontWeight: currentPage === 'home' ? '600' : '500'
+            justifyContent: 'space-around',
+            padding: '10px 0 10px 0',
+            zIndex: 100
           }}>
-            <span style={{ fontSize: '24px' }}>🏠</span>
-            Home
-          </button>
-          <button 
-            onClick={() => setCurrentPage('sports')}
-            style={{
-            backgroundColor: 'transparent',
-            border: 'none',
-            color: currentPage === 'sports' ? '#5B8EFF' : '#9CA3B8',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '4px',
-            cursor: 'pointer',
-            fontSize: '11px',
-            fontWeight: currentPage === 'sports' ? '600' : '500'
-          }}>
-            <span style={{ fontSize: '24px' }}>🏈</span>
-            Sports
-          </button>
-          <button 
-            onClick={() => setCurrentPage('profile')}
-            style={{
-            backgroundColor: 'transparent',
-            border: 'none',
-            color: currentPage === 'profile' ? '#5B8EFF' : '#9CA3B8',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '4px',
-            cursor: 'pointer',
-            fontSize: '11px',
-            fontWeight: currentPage === 'profile' ? '600' : '500'
-          }}>
-            <span style={{ fontSize: '24px' }}>👤</span>
-            Profile
-          </button>
-        </div>
-      )}
-    </div>
-  );
+            <button 
+              onClick={() => setCurrentPage('home')}
+              style={{
+                backgroundColor: 'transparent',
+                border: 'none',
+                color: currentPage === 'home' ? '#5B8EFF' : '#9CA3B8',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '4px',
+                cursor: 'pointer',
+                fontSize: '11px',
+                fontWeight: currentPage === 'home' ? '600' : '500'
+              }}>
+              <span style={{ fontSize: '24px' }}>🏠</span>
+              Home
+            </button>
+            <button 
+              onClick={() => setCurrentPage('sports')}
+              style={{
+                backgroundColor: 'transparent',
+                border: 'none',
+                color: currentPage === 'sports' ? '#5B8EFF' : '#9CA3B8',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '4px',
+                cursor: 'pointer',
+                fontSize: '11px',
+                fontWeight: currentPage === 'sports' ? '600' : '500'
+              }}>
+              <span style={{ fontSize: '24px' }}>🏈</span>
+              Sports
+            </button>
+            <button 
+              onClick={() => setCurrentPage('profile')}
+              style={{
+                backgroundColor: 'transparent',
+                border: 'none',
+                color: currentPage === 'profile' ? '#5B8EFF' : '#9CA3B8',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '4px',
+                cursor: 'pointer',
+                fontSize: '11px',
+                fontWeight: currentPage === 'profile' ? '600' : '500'
+              }}>
+              <span style={{ fontSize: '24px' }}>👤</span>
+              Profile
+            </button>
+          </div>
+        )}
+      </>
+    )}
+  </div>
+);
 }
