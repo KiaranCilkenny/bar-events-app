@@ -788,6 +788,33 @@ useEffect(() => {
           Team, performer or venue
         </button>
 
+          {/* ADD BAR BUTTON HERE */}
+        <button
+          onClick={() => setShowBarCollector(true)}
+          style={{
+            backgroundColor: '#5B8EFF',
+            border: 'none',
+            borderRadius: '12px',
+            padding: '12px',
+            width: '100%',
+            marginTop: '12px',
+            cursor: 'pointer',
+            color: '#FFFFFF',
+            fontSize: '14px',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px'
+          }}
+        >
+          🏗️ Add Bar (Admin)
+        </button>
+
+        <div style={{
+          display: 'flex',
+          gap: '8px',
+
         <div style={{
           display: 'flex',
           gap: '8px',
