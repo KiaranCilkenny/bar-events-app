@@ -2424,7 +2424,7 @@ const BarCollectorPage = () => {
     }
     setLoadingBarData(false);
   };
-
+  
   const generateCode = () => {
     if (!fetchedBarData) return;
 
