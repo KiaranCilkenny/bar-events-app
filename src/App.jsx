@@ -1,3 +1,5 @@
+import { getBarByName } from './google-places-service.js';
+
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, MapPin, User, Bell, Star, Heart, Search, X } from 'lucide-react';
 import espnAPI from './espn-api-service.js';
@@ -20,6 +22,19 @@ export default function BarEventsApp() {
   const [selectedBar, setSelectedBar] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [showBarCollector, setShowBarCollector] = useState(false);
+  const [collectorBarName, setCollectorBarName] = useState('');
+  const [fetchedBarData, setFetchedBarData] = useState(null);
+  const [loadingBarData, setLoadingBarData] = useState(false);
+  const [manualData, setManualData] = useState({
+    sports: '',
+    teamAffiliation: '',
+    specialFeatures: '',
+    gameDaySpecials: '',
+    instagram: '',
+    vibe: ''
+  });
+  
 
   const filters = [
     { id: 'nfl', icon: '🏈', label: 'NFL' },
@@ -2372,6 +2387,360 @@ const SportsSearchPage = () => (
     );
   };
 
+// Bar Collector Page Component
+const BarCollectorPage = () => {
+  const fetchBar = async () => {
+    setLoadingBarData(true);
+    try {
+      const data = await getBarByName(collectorBarName, 'New York, NY');
+      setFetchedBarData(data);
+      console.log('Fetched bar data:', data);
+    } catch (error) {
+      alert(`Error fetching bar: ${error.message}`);
+    }
+    setLoadingBarData(false);
+  };
+
+  const generateCode = () => {
+    if (!fetchedBarData) return;
+
+    const barObject = {
+      id: fetchedBarData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      ...fetchedBarData,
+      
+      sports: manualData.sports.split(',').map(s => s.trim()).filter(Boolean),
+      teamAffiliation: manualData.teamAffiliation,
+      specialFeatures: manualData.specialFeatures.split('\n').filter(Boolean),
+      gameDaySpecials: manualData.gameDaySpecials.split('\n').filter(Boolean),
+      instagram: manualData.instagram,
+      vibe: manualData.vibe,
+      
+      gradient: 'from-blue-600 to-gray-700',
+      distance: '0.5 mi',
+      isFanBar: manualData.teamAffiliation ? true : false
+    };
+
+    const code = JSON.stringify(barObject, null, 2);
+    
+    navigator.clipboard.writeText(code);
+    alert('✅ Bar data copied to clipboard!\n\nPaste it into targetBarsData.js');
+    
+    // Reset for next bar
+    setCollectorBarName('');
+    setFetchedBarData(null);
+    setManualData({
+      sports: '',
+      teamAffiliation: '',
+      specialFeatures: '',
+      gameDaySpecials: '',
+      instagram: '',
+      vibe: ''
+    });
+  };
+
+  return (
+    <div style={{
+      padding: '20px',
+      backgroundColor: '#0A0E27',
+      minHeight: '100vh',
+      color: '#FFFFFF',
+      maxWidth: '800px',
+      margin: '0 auto'
+    }}>
+      <button 
+        onClick={() => setShowBarCollector(false)}
+        style={{
+          backgroundColor: '#151B3F',
+          border: 'none',
+          color: '#FFFFFF',
+          padding: '10px 20px',
+          borderRadius: '8px',
+          cursor: 'pointer',
+          marginBottom: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}
+      >
+        <ChevronLeft size={18} />
+        Back to App
+      </button>
+
+      <h1 style={{ fontSize: '28px', marginBottom: '10px' }}>🏗️ Bar Data Collector</h1>
+      <p style={{ color: '#9CA3B8', marginBottom: '30px' }}>
+        Fetch bar info from Google, add manual details, generate code
+      </p>
+
+      {/* Step 1: Fetch from Google */}
+      <div style={{
+        backgroundColor: '#151B3F',
+        padding: '24px',
+        borderRadius: '16px',
+        marginBottom: '20px',
+        border: '1px solid rgba(255,255,255,0.1)'
+      }}>
+        <h2 style={{ fontSize: '18px', marginBottom: '16px', fontWeight: '600' }}>
+          Step 1: Fetch from Google Places
+        </h2>
+        
+        <input 
+          value={collectorBarName}
+          onChange={(e) => setCollectorBarName(e.target.value)}
+          placeholder="Enter bar name (e.g., 'Smithfield Hall')"
+          style={{
+            width: '100%',
+            padding: '12px',
+            backgroundColor: '#0A0E27',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '8px',
+            color: '#FFFFFF',
+            fontSize: '15px',
+            marginBottom: '12px'
+          }}
+          onKeyPress={(e) => e.key === 'Enter' && !loadingBarData && collectorBarName && fetchBar()}
+        />
+        
+        <button 
+          onClick={fetchBar}
+          disabled={loadingBarData || !collectorBarName}
+          style={{
+            backgroundColor: loadingBarData ? '#4a4a4a' : '#5B8EFF',
+            border: 'none',
+            color: '#FFFFFF',
+            padding: '12px 24px',
+            borderRadius: '8px',
+            cursor: loadingBarData || !collectorBarName ? 'not-allowed' : 'pointer',
+            fontSize: '15px',
+            fontWeight: '600'
+          }}
+        >
+          {loadingBarData ? '⏳ Searching Google...' : '🔍 Fetch Bar Data'}
+        </button>
+      </div>
+
+      {/* Step 2: Show fetched data */}
+      {fetchedBarData && (
+        <div style={{
+          backgroundColor: '#151B3F',
+          padding: '24px',
+          borderRadius: '16px',
+          marginBottom: '20px',
+          border: '2px solid #4ADE80'
+        }}>
+          <h2 style={{ fontSize: '18px', marginBottom: '16px', color: '#4ADE80', fontWeight: '600' }}>
+            ✓ Found: {fetchedBarData.name}
+          </h2>
+          
+          <div style={{ marginBottom: '16px', fontSize: '14px', lineHeight: '1.8' }}>
+            <p><strong>Address:</strong> {fetchedBarData.address}</p>
+            <p><strong>Phone:</strong> {fetchedBarData.phone}</p>
+            <p><strong>Website:</strong> <a href={fetchedBarData.website} target="_blank" style={{ color: '#5B8EFF' }}>{fetchedBarData.website}</a></p>
+            <p><strong>Rating:</strong> {fetchedBarData.rating}⭐ ({fetchedBarData.reviewCount} reviews)</p>
+            <p><strong>Google Maps:</strong> <a href={fetchedBarData.googleMapsUrl} target="_blank" style={{ color: '#5B8EFF' }}>View</a></p>
+          </div>
+
+          {fetchedBarData.hours && (
+            <details style={{ marginBottom: '16px' }}>
+              <summary style={{ cursor: 'pointer', fontWeight: '600', marginBottom: '8px' }}>
+                Hours
+              </summary>
+              <ul style={{ marginLeft: '20px', color: '#9CA3B8', fontSize: '14px' }}>
+                {fetchedBarData.hours.weekdayText.map((day, i) => (
+                  <li key={i}>{day}</li>
+                ))}
+              </ul>
+            </details>
+          )}
+
+          {fetchedBarData.photos.length > 0 && (
+            <details style={{ marginBottom: '16px' }}>
+              <summary style={{ cursor: 'pointer', fontWeight: '600', marginBottom: '8px' }}>
+                Photos ({fetchedBarData.photos.length})
+              </summary>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+                {fetchedBarData.photos.slice(0, 4).map((photo, i) => (
+                  <img 
+                    key={i} 
+                    src={photo.url} 
+                    alt={`${fetchedBarData.name} ${i+1}`}
+                    style={{ 
+                      width: '150px', 
+                      height: '100px', 
+                      objectFit: 'cover',
+                      borderRadius: '8px'
+                    }} 
+                  />
+                ))}
+              </div>
+            </details>
+          )}
+        </div>
+      )}
+
+      {/* Step 3: Add manual data */}
+      {fetchedBarData && (
+        <div style={{
+          backgroundColor: '#151B3F',
+          padding: '24px',
+          borderRadius: '16px',
+          marginBottom: '20px',
+          border: '1px solid rgba(255,255,255,0.1)'
+        }}>
+          <h2 style={{ fontSize: '18px', marginBottom: '16px', fontWeight: '600' }}>
+            Step 2: Add Manual Details
+          </h2>
+          
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', color: '#9CA3B8', fontWeight: '500' }}>
+              Sports (comma-separated)
+            </label>
+            <input 
+              value={manualData.sports}
+              onChange={(e) => setManualData({...manualData, sports: e.target.value})}
+              placeholder="GAA, Premier League, NFL, UFC"
+              style={{
+                width: '100%',
+                padding: '10px',
+                backgroundColor: '#0A0E27',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '8px',
+                color: '#FFFFFF',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', color: '#9CA3B8', fontWeight: '500' }}>
+              Team Affiliation (optional)
+            </label>
+            <input 
+              value={manualData.teamAffiliation}
+              onChange={(e) => setManualData({...manualData, teamAffiliation: e.target.value})}
+              placeholder="e.g., Official Giants bar, Mayo GAA supporters"
+              style={{
+                width: '100%',
+                padding: '10px',
+                backgroundColor: '#0A0E27',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '8px',
+                color: '#FFFFFF',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', color: '#9CA3B8', fontWeight: '500' }}>
+              Special Features (one per line)
+            </label>
+            <textarea 
+              value={manualData.specialFeatures}
+              onChange={(e) => setManualData({...manualData, specialFeatures: e.target.value})}
+              placeholder="Opens 8am for GAA&#10;30+ HD screens&#10;Full Irish breakfast"
+              rows={4}
+              style={{
+                width: '100%',
+                padding: '10px',
+                backgroundColor: '#0A0E27',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '8px',
+                color: '#FFFFFF',
+                fontSize: '14px',
+                fontFamily: 'inherit',
+                resize: 'vertical'
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', color: '#9CA3B8', fontWeight: '500' }}>
+              Game Day Specials (one per line)
+            </label>
+            <textarea 
+              value={manualData.gameDaySpecials}
+              onChange={(e) => setManualData({...manualData, gameDaySpecials: e.target.value})}
+              placeholder="$6 Guinness pints during games&#10;$5 wings&#10;Half-price apps at halftime"
+              rows={4}
+              style={{
+                width: '100%',
+                padding: '10px',
+                backgroundColor: '#0A0E27',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '8px',
+                color: '#FFFFFF',
+                fontSize: '14px',
+                fontFamily: 'inherit',
+                resize: 'vertical'
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', color: '#9CA3B8', fontWeight: '500' }}>
+              Instagram Handle
+            </label>
+            <input 
+              value={manualData.instagram}
+              onChange={(e) => setManualData({...manualData, instagram: e.target.value})}
+              placeholder="@smithfieldhall"
+              style={{
+                width: '100%',
+                padding: '10px',
+                backgroundColor: '#0A0E27',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '8px',
+                color: '#FFFFFF',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', color: '#9CA3B8', fontWeight: '500' }}>
+              Vibe / Atmosphere
+            </label>
+            <textarea 
+              value={manualData.vibe}
+              onChange={(e) => setManualData({...manualData, vibe: e.target.value})}
+              placeholder="Young professionals, international crowd, great for soccer fans"
+              rows={2}
+              style={{
+                width: '100%',
+                padding: '10px',
+                backgroundColor: '#0A0E27',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '8px',
+                color: '#FFFFFF',
+                fontSize: '14px',
+                fontFamily: 'inherit',
+                resize: 'vertical'
+              }}
+            />
+          </div>
+
+          <button 
+            onClick={generateCode}
+            style={{
+              backgroundColor: '#4ADE80',
+              border: 'none',
+              color: '#0A0E27',
+              padding: '14px 28px',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontSize: '16px',
+              fontWeight: '700',
+              width: '100%'
+            }}
+          >
+            ✓ Generate & Copy Code
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+  
   return (
     <div style={{
       backgroundColor: '#0A0E27',
